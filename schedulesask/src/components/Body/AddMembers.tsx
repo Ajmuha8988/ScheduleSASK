@@ -1,20 +1,18 @@
 ﻿import { useState } from 'react';
 import "./mobilebody.css"
 import { TextField, Autocomplete } from "@mui/material";
-import { createTheme} from "@mui/material";
 import 'react-phone-input-2/lib/material.css';
 import * as React from 'react';
 import { MemberService } from '../../utils/db/post/AddMembers';
 import { GetStudents } from '../../utils/db/get/GetStudent';
 import { styled } from "@mui/material/styles";
 
-const theme = createTheme({
-    palette: {
-        customColor: {
-            main: '#ffc107', // Замените на нужный вам цвет
-        },
-    },
-});
+interface OptionType {
+    label: string;
+    value: bigint;
+}
+
+
 const StyledAutocomplete = styled(Autocomplete)({
     "& .MuiFormLabel-root.Mui-focused": {
         fontFamily: 'Vollda',
@@ -49,7 +47,7 @@ const StyledAutocomplete = styled(Autocomplete)({
 
 const AddMembersForm = () => {
     const { addMember } = MemberService();
-    const [ID_Student, setID_Students] = useState(null); 
+    const [ID_Student, setID_Students] = useState<bigint | null>(null); 
     const student = GetStudents(); 
     const options = student?.length > 0 ?  student.map(students => ({
         label: `${students.Lastname} ${students.Firstname} ${students.Patronymic}`,
@@ -58,14 +56,21 @@ const AddMembersForm = () => {
     const [error, setError] = useState<string | null>(null);
     const AddMembersSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-            try {
-                await addMember({
-                    ID_Students: ID_Student
-                });
-                window.location.reload();
-            } catch (error) {
-                setError(error.message)
+        if (!addMember || !ID_Student) {
+            setError("Невозможно добавить члена группы.");
+            return;
+        }
+
+        try {
+            await addMember({ ID_Students: ID_Student });
+            window.location.reload();
+        } catch (err) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError(String(err)); // Конвертируем err в строку, если это не стандартный Error
             }
+        }
         
     };
     return (
@@ -75,19 +80,17 @@ const AddMembersForm = () => {
                     id="combo-box-demo"
                     options={options}
                     noOptionsText={"Нет студентов"}
-                    getOptionLabel={(option) => option.label}
+                    getOptionLabel={(option) => typeof option === 'object' && option !== null
+                    ? (option as OptionType).label
+                    : ''
+                    }
                     renderInput={(params) => <TextField
                        required
-                       InputLabelProps={{
-                           style: {
-                               fontFamily: 'Vollda'
-                            }
-                        }}
                         {...params}
                         label="Студент" />}
-                    onChange={(event, newValue) => {
-                        // Установка идентификатора студента при изменении выбора
-                        setID_Students(newValue?.value);
+                        onChange={(_, newValue) => {
+                        const typedNewValue = newValue as OptionType;
+                        setID_Students(typedNewValue.value);
                     }}
                 />
                 {error && <p style={{ color: 'red' }}>{error}</p>}
