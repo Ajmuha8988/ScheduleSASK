@@ -1,0 +1,82 @@
+﻿.font-for-headers{
+    font-family: Vollda !important;
+}
+.my-custom-container .special-label {
+    color: #616161;
+    font-family: Vollda !important; /* Изменяем цвет текста специальной метки */
+}
+.mobile-fio {
+    display: none !important;
+}
+.mobile-fio-disabled {
+    display: block !important;
+}
+.w-15{
+    width: 15% !important;
+}
+.w-23 {
+    width: 23% !important;
+    margin-left: 10px !important;
+}
+.table-cell-break {
+    white-space: pre-wrap; /* Позволяет переносить строки по \n */
+}
+.mms-2{
+    margin-left: 0px;
+}
+@media (min-width:767px) {
+    .mms-2 {
+        margin-left: 20px;
+    }
+}
+    @media (max-width:768px) {
+        .mmt-1 {
+            margin-top: 10px !important;
+        }
+
+        .mobile-button {
+            margin-top: 12px !important;
+        }
+
+        .mobile-fio {
+            display: block !important;
+        }
+
+        .mobile-fio-disabled {
+            display: none !important;
+        }
+
+        .d-flex {
+            display: block !important;
+        }
+
+        .smw-100 {
+            width: 100% !important;
+        }
+
+        .smmx-13 {
+            margin-left: 13px !important;
+        }
+
+        .d-block {
+            justify-content: normal
+        }
+    }
+
+    @media (max-width:356px) {
+        .smw-40 {
+            width: 40% !important;
+        }
+    }
+
+    @media (max-width:376px) {
+        .smw-30 {
+            width: 30% !important;
+        }
+    }
+
+    @media (max-width:576px) {
+        .smw-30 {
+            width: 30% !important;
+        }
+    }

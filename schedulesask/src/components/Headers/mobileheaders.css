@@ -1,0 +1,52 @@
+﻿.dropdown-item:focus,
+.dropdown-item:hover {
+    background-color: orange !important;
+}
+
+.a:focus,
+.a:hover {
+    background-color: #ffc107 !important; /* Более яркий оттенок оранжевого */
+}
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.jce{
+    justify-content: end;
+}
+.jcs {
+    justify-content: start;
+}
+.font-for-headers{
+    font-family: Vollda !important;
+}
+.my-custom-container .special-label {
+    color: #616161;
+    font-family: Vollda !important; /* Изменяем цвет текста специальной метки */
+}
+.mobile-fio {
+    display: none !important;
+}
+.mobile-fio-disabled {
+    display: block !important;
+}
+
+@media (max-width:992px) {
+    .mobile-button{
+        margin-top: 12px !important;
+    }
+    .mobile-fio{
+        display: block !important;
+    }
+    .mobile-fio-disabled {
+        display: none !important;
+    }
+    .jce {
+        justify-content: start;
+    }
+    .jcs {
+        justify-content: end;
+    }
+}

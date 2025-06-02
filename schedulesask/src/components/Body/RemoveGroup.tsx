@@ -1,0 +1,32 @@
+﻿import { useState } from 'react'; 
+import "./mobilebody.css"
+import { DeleteGroupService } from '../../utils/db/delete/exitGroup';
+
+type Props = {
+    onLogout?: () => void; // Опциональный колбэк для дополнительной логики
+};
+
+const RemoveGroupButton: React.FC<Props> = ({ onLogout }) => {
+    const { exitgroup } = DeleteGroupService();
+    const [error, setError] = useState<string | null>(null);
+    const ExitGroupsSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        try {
+            await exitgroup();
+        } catch (error) {
+            setError(error.message)
+        }
+
+    };
+    return (
+        <form className="col-lg-2 h-25" onSubmit={ExitGroupsSubmit}>
+            <button className="btn mt-2 btn-danger text-light mobile-button">
+                Удалить группу
+            </button>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+        </form>
+        
+    );
+};
+
+export default RemoveGroupButton;
