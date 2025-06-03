@@ -7,7 +7,6 @@ import AddPlanForm from './AddPlan';
 import ListSemesterPlan from './ListSemesterPlan';
 import ValidationAdministrator from '../../utils/Validation/ValidationPageAdministrator'
 import { BeatLoader } from 'react-spinners';
-import CircularProgress from '@mui/material/CircularProgress';
 
 const PlanConstructorBody = () => {
     const { loading } = ValidationAdministrator(); // Получаем флаг загрузки

@@ -59,17 +59,13 @@ export const PScheduleService = () => {
                 }
             }
         } catch (error) {
-            if (error instanceof Error) {
                 throw new Error(JSON.stringify({
                     errormessageserver: error.errorInServer,
                     firsterrormessage: error.firstError,
                     hourerrormessage: error.HourError,
                     teacherrormessage: error.TeacherError,
                 }));
-            }
-            else {
-                console.log(String(error));
-            }
+            
         }
     };
     return { addPSchedule };

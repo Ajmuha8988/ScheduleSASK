@@ -9,7 +9,7 @@ import * as React from 'react';
 
 const theme = createTheme({
     palette: {
-        customColor: {
+        warning: {
             main: '#ffc107', // Замените на нужный вам цвет
         },
     },
@@ -17,17 +17,25 @@ const theme = createTheme({
 
 const AddGroupButton = () => {
     const [errorGroup, SetErrorGroup] = useState<string | null>(null);
-    const [Group, setGroup] = useState<string | null>();
+    const [Group, setGroup] = useState<string | null>('');
     const { addGroup } = GroupService();
     const [showAddGroup, setAddGroup] = useState(false);
     const CreateGroup = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!Group) {
+            console.log("Невозможно добавить учебную группу.");
+            return;
+        }
         try {
             await addGroup({
                 NameGroup: Group
             });
         } catch (error) {
-            SetErrorGroup(error.message);
+            if (error instanceof Error) {
+                SetErrorGroup(error.message);
+            } else {
+                SetErrorGroup((String(error))); // Конвертируем err в строку, если это не стандартный Error
+            }
         }
     };
     return (
@@ -57,7 +65,7 @@ const AddGroupButton = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Группа"
                                     id="Group" value={Group} onChange={(e) => setGroup(e.target.value)}
                                     variant="outlined"

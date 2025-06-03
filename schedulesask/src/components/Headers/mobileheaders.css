@@ -1,4 +1,4 @@
-﻿.dropdown-item:focus,
+﻿﻿.dropdown-item:focus,
 .dropdown-item:hover {
     background-color: orange !important;
 }
@@ -7,45 +7,63 @@
 .a:hover {
     background-color: #ffc107 !important; /* Более яркий оттенок оранжевого */
 }
+
 .spinner-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
-.jce{
+
+.jce {
     justify-content: end;
 }
+
 .jcs {
     justify-content: start;
 }
-.font-for-headers{
+
+.font-for-headers {
     font-family: Vollda !important;
+}
+/* Файл стилей для изменения цвета границы */
+
+.my-custom-container .form-control:focus,
+.my-custom-container .form-control:active {
+    outline: auto !important; /* Скрываем default-outline */
+    box-shadow: none !important;
+    outline-color: orange !important; /* Сохраняем цвет при фокусе */
 }
 .my-custom-container .special-label {
     color: #616161;
     font-family: Vollda !important; /* Изменяем цвет текста специальной метки */
 }
+
 .mobile-fio {
     display: none !important;
 }
+
 .mobile-fio-disabled {
     display: block !important;
 }
 
 @media (max-width:992px) {
-    .mobile-button{
+    .mobile-button {
         margin-top: 12px !important;
     }
-    .mobile-fio{
+
+    .mobile-fio {
         display: block !important;
     }
+
     .mobile-fio-disabled {
         display: none !important;
     }
+
     .jce {
         justify-content: start;
     }
+
     .jcs {
         justify-content: end;
     }

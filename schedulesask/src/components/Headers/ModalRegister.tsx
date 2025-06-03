@@ -14,9 +14,12 @@ import { FormControl } from "@mui/material";
 
 const theme = createTheme({
     palette: {
-        customColor: {
+        warning: {
             main: '#ffc107', // Замените на нужный вам цвет
         },
+        info:{
+            main: '#616161', // Замените на нужный вам цвет
+        }
     },
 });
 
@@ -25,9 +28,10 @@ const RegisterButton = () => {
     const [Lastname, setLastname] = useState('');
     const [Firstname, setFirstname] = useState('');
     const [Patronymic, setPatronymic] = useState('');
-    const [Email, setEmail] = useState<{ Email: string } | null>();
+    const [Emails, setEmail] = useState<string | null>('');
     const [Password, setPassword] = useState('');
     const [CallNumber, setCallNumber] = useState('');
+    const [errors, setErrors] = useState('');  
     const [Role, setRole] = React.useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const { registerUser } = RegisterService();
@@ -36,25 +40,38 @@ const RegisterButton = () => {
     const [errorPassword, setPasswordMessage] = useState<string | null>(null);
     const RegisterSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (Password !== confirmPassword) {
-            setPasswordMessage('Пароли не совпадают');
-        } else {
-            setPasswordMessage('');
-            try {
-                await registerUser({
-                    Lastname: Lastname,
-                    Firstname: Firstname,
-                    Patronymic: Patronymic,
-                    Email: Email,
-                    Password: Password,
-                    CallNumber: CallNumber,
-                    Role: Role
-                });
-            } catch (error) {
-                setErrorEmail(error.message);
-                setErrorCall(error.messagecall);
+        if (!Emails || CallNumber.length < 10) {
+            setErrors('Номер телефона должен превышать 10');
+            return;
+        }
+        else {
+            if (Password !== confirmPassword) {
+                setPasswordMessage('Пароли не совпадают');
+            } else {
+                setPasswordMessage('');
+                try {
+                    await registerUser({
+                        Lastname: Lastname,
+                        Firstname: Firstname,
+                        Patronymic: Patronymic,
+                        Email: Emails,
+                        Password: Password,
+                        CallNumber: CallNumber,
+                        Role: Role
+                    });
+                } catch (error) {
+                    if (error instanceof Error) {
+                        const parsedError = JSON.parse(error.message);
+                        setErrorEmail(parsedError.message);
+                        setErrorCall(parsedError.messagecall);
+                    } else {
+                        setErrorEmail(String(error));
+                        setErrorCall(String(error));// Конвертируем err в строку, если это не стандартный Error
+                    }
+                }
             }
         }
+        
     };
     return (
         <header>
@@ -84,7 +101,7 @@ const RegisterButton = () => {
                                     }}
                                     size='small'
                                     className='form-control'
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Фамилия"
                                     variant="outlined"
                                     id="Lastname" value={Lastname} onChange={(e) => setLastname(e.target.value)}
@@ -106,7 +123,7 @@ const RegisterButton = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Имя"
                                     variant="outlined"
                                     id="Fistname" value={Firstname} onChange={(e) => setFirstname(e.target.value)}
@@ -130,7 +147,7 @@ const RegisterButton = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Отчество"
                                     variant="outlined"
                                     id="Patronymic" value={Patronymic} onChange={(e) => setPatronymic(e.target.value)}
@@ -156,9 +173,9 @@ const RegisterButton = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Почта"
-                                    type="email" id="Email" value={Email} onChange={(e) => setEmail(e.target.value)}
+                                    type="email" id="Email" value={Emails} onChange={(e) => setEmail(e.target.value)}
                                     variant="outlined"
                                     className='form-control'
                                     size='small'
@@ -169,22 +186,27 @@ const RegisterButton = () => {
                         </ThemeProvider>
                         <ThemeProvider theme={theme}>
                             <div className="mb-3">
-                                <PhoneInput
-                                    inputProps={{
-                                        style: {
-                                            ClassNames: 'font-for-headers',
-                                            fontSize: '14px', /* Уменьшаем шрифт */
-                                            height: '40px',   /* Уменьшаем высоту поля ввода */
-                                            width: '100%'
-                                        },
-                                    }}
-                                    containerClass="my-custom-container"
-                                    specialLabel='Номер телефона'
-                                    onlyCountries={['ru', 'kz', 'ua', 'cn', 'by', 'tr']}
-                                    country='ru'
-                                    id="CallNumber" value={CallNumber} onChange={setCallNumber}
-                                    required
-                                />
+                            <PhoneInput
+                                inputProps={{
+                                    style: {
+                                        ClassNames: 'font-for-headers',
+                                        fontSize: '14px', /* Уменьшаем шрифт */
+                                        height: '40px',   /* Уменьшаем высоту поля ввода */
+                                        width: '100%'
+                                    },
+                                }}
+                                containerClass='my-custom-container'
+                                specialLabel='Номер телефона'
+                                onlyCountries={['ru', 'kz', 'ua', 'cn', 'by', 'tr']}
+                                country='ru'
+                                value={CallNumber} onChange={(value) => {
+                                    setCallNumber(value); // Обновляем номер телефона
+                                }}             // Используем ошибку для визуального выделения
+                                containerStyle={{ marginBottom: '8px' }}  // Пространство между полями
+                            />
+
+                                {/* Отображаем сообщение об ошибке */}
+                                {errors && <p style={{ color: 'red' }}>{errors}</p>}
                                 {errorCall && <p style={{ color: 'red' }}>{errorCall}</p>}
                             </div>
                         </ThemeProvider>
@@ -205,7 +227,7 @@ const RegisterButton = () => {
                                                 color: '#616161',
                                             },
                                         }}
-                                        color='customColor' // Используем созданный нами цвет
+                                        color='warning' // Используем созданный нами цвет
                                         label="Пароль"
                                         type="password" value={Password} onChange={(e) => setPassword(e.target.value)}
                                         variant="outlined"
@@ -233,7 +255,7 @@ const RegisterButton = () => {
                                                 color: '#616161',
                                             },
                                         }}
-                                        color='customColor' // Используем созданный нами цвет
+                                        color='warning' // Используем созданный нами цвет
                                         label="Повторите пароль"
                                         type="password"
                                         variant="outlined"
@@ -251,15 +273,14 @@ const RegisterButton = () => {
                         <ThemeProvider theme={theme}>
                             <div className="mb-3">
                                 <FormControl fullWidth size="small">
-                                    <InputLabel id="demo-select-small-label" className='font-for-headers' color='#616161' >Пользователь</InputLabel>
+                                    <InputLabel id="demo-select-small-label" className='font-for-headers' color='info' >Пользователь</InputLabel>
                                     <Select
                                         labelId="demo-select-small-label"
                                         id="demo-select-small"
                                         value={Role}
                                         label="Пользователь"
                                         onChange={(e: SelectChangeEvent) => setRole(e.target.value)}
-                                        color='customColor'
-                                        fontFamily='Vollda'
+                                        color='warning'
                                         sx={{ fontFamily: "Vollda", }} required>
                                         <MenuItem value='Студент' className='font-for-headers'>Студент</MenuItem>
                                         <MenuItem value='Преподаватель' className='font-for-headers'>Преподаватель</MenuItem>

@@ -64,10 +64,11 @@ export const RegisterService = () => {
                 };
             }
         } catch (error) {
-            throw {
-                message: error.message || 'Произошла ошибка при регистрации',
-                messagecall: error.messagecall || ''
-            };
+                throw new Error(JSON.stringify({
+                    message: error.message,
+                    messagecall: error.messagecall,
+                }));
+                console.log(String(error));
         }
     };
 
