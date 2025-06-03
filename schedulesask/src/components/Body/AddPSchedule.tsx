@@ -22,10 +22,29 @@ import { inputBaseClasses } from '@mui/material/InputBase';
 import { calculateSemester } from '../../utils/Date/CalculateSemester';
 import { Modal } from 'react-bootstrap';
 
+interface OptionType {
+    label: string;
+    value: bigint;
+}
+interface OptionTypeString {
+    label: string;
+    value: string;
+}
+interface OptionTypeNumberLessons {
+    label: string;
+    value: number;
+}
+interface OptionTypeLessons {
+    label: string;
+    value: bigint;
+    validate: bigint;
+    lessonlabel: number;
+
+}
 
 const theme = createTheme({
     palette: {
-        customColor: {
+        warning: {
             main: '#ffc107', // Замените на нужный вам цвет
         },
     },
@@ -95,18 +114,18 @@ const AddPScheduleForm = () => {
     useEffect(() => {
         SetCurrentNameGroup(nameGroup); // устанавливаем состояние только один раз
     }, [nameGroup]);
-    const [LabelTeacher, setLabelTeacher] = useState(null);
-    const [LabelLesson, setLabelLesson] = useState(null);
-    const [LabelLessonWeek, setLabelLessonWeek] = useState(null);
-    const [ID_TeacherPlans, setID_TeacherPlan] = useState(null);
-    const [ID_Lessons, setID_Lesson] = useState(null);
-    const [ID_Rooms, setID_Room] = useState(null);
-    const [ID_Teacher, setID_Teacher] = useState(null);
-    const [NumberLesson, setNumberLesson] = useState(null);
-    const [DaysOfWeeks, setDaysOfWeek] = useState(null);
-    const [KindOfSchedule, setKindOfSchedule] = useState(null);
-    const [FirstHours, setFirstHour] = useState(null);
-    const [SecondHours, setSecondHour] = useState(null);
+    const [LabelTeacher, setLabelTeacher] = useState<string | null>(null);
+    const [LabelLesson, setLabelLesson] = useState<string | null>('');;
+    const [LabelLessonWeek, setLabelLessonWeek] = useState<number | null>(null);
+    const [ID_TeacherPlans, setID_TeacherPlan] = useState<bigint | null>(null);
+    const [ID_Lessons, setID_Lesson] = useState<bigint | null>(null);
+    const [ID_Rooms, setID_Room] = useState<bigint | null>(null);
+    const [ID_Teacher, setID_Teacher] = useState<bigint | null>(null);
+    const [NumberLessons, setNumberLesson] = useState<number | null>(null);
+    const [DaysOfWeeks, setDaysOfWeek] = useState<string | null>(null);
+    const [KindOfSchedule, setKindOfSchedule] = useState<string | null>(null);
+    const [FirstHours, setFirstHour] = useState<number | null>(null);
+    const [SecondHours, setSecondHour] = useState<number | null>(null);
     const [CombinedCouples, SetCombinedCouple] = useState(false);
     const group = GetAllgroups();
     const { dataPlanLesson } = GetPlanLesson();
@@ -114,7 +133,7 @@ const AddPScheduleForm = () => {
     const room = GetAllrooms();
     const teacher = GetAllTeacher();
     const filteredDataPlanLesson = dataPlanLesson.filter(
-        lesson => lesson.Temp_ID_User === ID_Teacher && // Предполагается, что данные содержат Teacher_Temp_ID
+        lesson => Number(lesson.Temp_ID_User) === Number(ID_Teacher) && // Предполагается, что данные содержат Teacher_Temp_ID
         lesson.NameGroup === CurrentNameGroup && lesson.KindOfSemester === dataSemester
     );
     const optionsGroup = group?.length > 0 ? group.map(groups => ({
@@ -131,7 +150,7 @@ const AddPScheduleForm = () => {
         value: dataPlanLessons.ID_Lesson,
         validate: dataPlanLessons.ID_TeacherPlan,
         lessonlabel: dataPlanLessons.NumberHourInWeek,
-    })) : [];
+        })) : [];
     const optionsRoom = room?.length > 0 ? room.map(rooms => ({
         label: `${rooms.NameRoom}`,
         value: rooms.ID_Room,
@@ -149,46 +168,66 @@ const AddPScheduleForm = () => {
         value: kindOfscheduless,
     }));
     const [error, setError] = useState<string | null>(null);
-    const changeGroup = async (groupId) => {
+    const changeGroup = async (groupId: string) => {
         try {
             await EventChangeGroup({ NameGroup: groupId }); // Выполняем изменение группы
             window.location.reload(); // Перезагружаем страницу после успешного изменения
         } catch (error) {
-            setError(error.message); // Устанавливаем ошибку в состояние
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError(String(error));
+            } // Устанавливаем ошибку в состояние
         }
     };
-    const lessonInputRef = React.useRef();
     const AddPScheduleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!ID_Rooms || !ID_Lessons || !NumberLessons || !ID_Teacher
+            || !DaysOfWeeks || !KindOfSchedule) {
+            console.log("Невозможно добавить учебный расписание.");
+            return;
+        }
         try {
              const successPSchedule = await addPSchedule({
                 NameGroup: CurrentNameGroup,
                 ID_Lesson: ID_Lessons,
                 ID_Room: ID_Rooms,
                 ID_user: ID_Teacher,
-                NumberLessons: NumberLesson,
+                NumberLesson: NumberLessons,
                 DaysOfWeek: DaysOfWeeks,
                 KindOfSchedules: KindOfSchedule,
                 CombinedCouple: CombinedCouples
              });
-            SetSuccessPSchedule(successPSchedule);
+            if (successPSchedule && typeof successPSchedule === 'string') { // Убедитесь, что возвращается именно строка
+                SetSuccessPSchedule(successPSchedule); // Устанавливаем сообщение успеха
+            } else {
+                SetSuccessPSchedule('Ошибка добавления предмета.');
+            }
             SetErrorInServerFirst(null);
             SetErrorInServer(null);
             SetErrorInServerSecond(null);
             SetErrorInTeacherTime(null);
             setTimeout(() => window.location.reload(), 1000);
         } catch (error) {
-            setError(error.message)
-            SetSuccessPSchedule(null);
-            SetErrorInServer(error.errormessageserver);
-            SetErrorInServerFirst(error.firsterrormessage);
-            SetErrorInServerSecond(error.hourerrormessage)
-            SetErrorInTeacherTime(error.teacherrormessage);
+            if (error instanceof Error) {
+                const parsedError = JSON.parse(error.message);
+                SetErrorInServer(parsedError.errormessageserver);
+                SetErrorInServerFirst(parsedError.firsterrormessage);
+                SetErrorInServerSecond(parsedError.hourerrormessage);
+                SetErrorInTeacherTime(parsedError.teacherrormessage);
+            } else {
+                setError(String(error));
+            }
+            
         }
 
     };
     const AddSubBurden = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!ID_TeacherPlans || !FirstHours || !SecondHours) {
+            console.log("Невозможно добавить учебный расписание.");
+            return;
+        }
         try {
             const successfullSubBurden = await addGeneralSubBurden({
                 ID_TeacherPlan: ID_TeacherPlans,
@@ -197,37 +236,57 @@ const AddPScheduleForm = () => {
             });
             SetErrorFirst(null);
             SetErrorSecond(null);
-            SetSuccessSubBurden(successfullSubBurden);
+            if (successfullSubBurden && typeof successfullSubBurden === 'string') { // Убедитесь, что возвращается именно строка
+                SetSuccessSubBurden(successfullSubBurden); // Устанавливаем сообщение успеха
+            } else {
+                SetSuccessSubBurden('Ошибка распределение поднагрузки.');
+            }
             setTimeout(() => window.location.reload(), 1000);
         } catch (error) {
-            SetSuccessSubBurden(null);
-            SetErrorFirst(error.errormessage1);
-            SetErrorSecond(error.errormessage2);
+            if (error instanceof Error) {
+                const parsedError = JSON.parse(error.message);
+                SetSuccessSubBurden(null);
+                SetErrorFirst(parsedError.errormessage1);
+                SetErrorSecond(parsedError.errormessage2);
+            } else {
+                setError(String(error));
+            }
         }
 
     };
-    const handleSelectLesson = async (newValue) => {
+    const handleSelectLesson = async (newValue: OptionTypeLessons) => {
         if (!newValue || !newValue.validate) {
-            setFirstHour('');
-            setSecondHour('');
+            setFirstHour(null);
+            setSecondHour(null);
         } ;
 
         try {
             // Получаем часы преподавателя непосредственно из массива учителей
-            const selectedLesson = filteredDataPlanLesson.find(t => t.ID_TeacherPlan === newValue.validate);
-            const selectedSubBurden = dataAllSubBurden.find(x => x.ID_TeacherPlan === selectedLesson.ID_TeacherPlan);
-            if (selectedSubBurden && selectedSubBurden.NumeratorPlan !== undefined && selectedSubBurden.DenominatorPlan !== undefined) {
-                setFirstHour(selectedSubBurden.NumeratorPlan.toString());
-                setSecondHour(selectedSubBurden.DenominatorPlan.toString());
-            } else {
+            const selectedLesson = filteredDataPlanLesson.find(t => BigInt(t.ID_TeacherPlan) === BigInt(newValue.validate));
+            if (selectedLesson === undefined) {
                 SetAddSubBurden(true);
                 console.error("Данные о числе пар отсутствуют");
             }
+            else {
+                const selectedSubBurden = dataAllSubBurden.find(x => x.ID_TeacherPlan === selectedLesson.ID_TeacherPlan);
+                if (selectedSubBurden && selectedSubBurden.NumeratorPlan !== undefined && selectedSubBurden.DenominatorPlan !== undefined) {
+                    setFirstHour(selectedSubBurden.NumeratorPlan);
+                    setSecondHour(selectedSubBurden.DenominatorPlan);
+                } else {
+                    SetAddSubBurden(true);
+                    console.error("Данные о числе пар отсутствуют");
+                }
+            }
+            
         } catch (err) {
-            console.error(err.message);
+            if (err instanceof Error) {
+                console.error(err.message);
+            } else {
+                setError(String(err));
+            }
         }
     };
-    const handleToggleChange = (event) => {
+    const handleToggleChange = (event : React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked === true) {
             console.log(event.target.checked);
             SetCombinedCouple(true);
@@ -246,22 +305,27 @@ const AddPScheduleForm = () => {
                 options={optionsGroup}
                 value={{ label: CurrentNameGroup}}
                 noOptionsText={"Нет групп"}
-                getOptionLabel={(option) => option.label}
+                getOptionLabel={(option) => typeof option === 'object' && option !== null
+                    ? (option as OptionType).label
+                    : ''
+                }
                 renderInput={(params) => <TextField
                 required
-                InputLabelProps={{
-                     style: {
-                        fontFamily: 'Vollda'
-                     }
-                    }}
                     {...params}
                     label="Группа"
                     />}
-                    onChange={(event, newValue) => {
-                        if (newValue && newValue.value) {
-                            changeGroup(newValue.label); // Сразу вызываем смену группы при выборе нового значения
+                    onChange={(_, newValue) => {
+                        const typedNewValue = newValue as OptionType;
+                        if (typedNewValue === null) {
+                            SetCurrentNameGroup('');
                         }
-                        SetCurrentNameGroup('');
+                        else {
+                            if (typedNewValue && typedNewValue.value) {
+                                changeGroup(typedNewValue.label); // Сразу вызываем смену группы при выборе нового значения
+                            }
+                            SetCurrentNameGroup('');
+                        }
+                        
                 }}
                 
             />
@@ -272,21 +336,33 @@ const AddPScheduleForm = () => {
                         id="combo-box-demo"
                         options={optionsTeacher}
                         noOptionsText={"Нет преподавателей"}
-                        getOptionLabel={(option) => option.label}
+                            getOptionLabel={(option) => typeof option === 'object' && option !== null
+                                ? (option as OptionType).label
+                                : ''
+                            }
                         renderInput={(params) => <TextField
                             required
-                            InputLabelProps={{
-                                style: {
-                                    fontFamily: 'Vollda'
-                                }
-                            }}
                             {...params}
                             label="Преподаватель" />}
-                            onChange={(event, newValue) => {
-                            setID_Lesson('');
-                            setLabelLesson('');
-                            setID_Teacher(newValue?.value);
-                            setLabelTeacher(newValue?.label)
+                            onChange={(_, newValue) => {
+                                const typedNewValue = newValue as OptionType;
+                                if (typedNewValue === null) {
+                                    setID_Lesson(null);
+                                    setLabelLesson(null);
+                                    setID_Teacher(null);
+                                    setLabelTeacher('');
+                                    setFirstHour(null);
+                                    setSecondHour(null);
+                                }
+                                else {
+                                    setID_Lesson(null);
+                                    setFirstHour(null);
+                                    setSecondHour(null);
+                                    setLabelLesson('');
+                                    setID_Teacher(typedNewValue.value);
+                                    setLabelTeacher(typedNewValue.label)
+                                }
+                            
 
                         }}
                     />
@@ -298,22 +374,30 @@ const AddPScheduleForm = () => {
                                 options={optionsLesson}
                                 value={{ label: LabelLesson }}
                                 noOptionsText={"Нет учебных предметов"}
-                                getOptionLabel={(option) => option.label}
+                                    getOptionLabel={(option) => typeof option === 'object' && option !== null
+                                        ? (option as OptionTypeLessons).label
+                                        : ''
+                                    }
                                 renderInput={(params) => <TextField
                                     required
-                                    InputLabelProps={{
-                                        style: {
-                                            fontFamily: 'Vollda'
-                                        }
-                                    }}
                                     {...params}
                                     label="Учебный предмет" />}
-                                onChange={(event, newValue) => {
-                                    setID_Lesson(newValue?.value);
-                                    setLabelLesson(newValue?.label);
-                                    setLabelLessonWeek(newValue?.lessonlabel);
-                                    setID_TeacherPlan(newValue?.validate)
-                                    handleSelectLesson(newValue);
+                                    onChange={(_, newValue) => {
+                                        const typedNewValue = newValue as OptionTypeLessons;
+                                        if (typedNewValue === null) {
+                                            setID_Lesson(null);
+                                            setLabelLesson('');
+                                            setLabelLessonWeek(null);
+                                            setID_TeacherPlan(null);
+                                        }
+                                        else {
+                                            setID_Lesson(typedNewValue.value);
+                                            setLabelLesson(typedNewValue.label);
+                                            setLabelLessonWeek(typedNewValue.lessonlabel);
+                                            setID_TeacherPlan(typedNewValue.validate)
+                                            handleSelectLesson(typedNewValue);
+                                        }
+                                    
                                 }}
                             />
                             {ID_Lessons && (
@@ -323,18 +407,22 @@ const AddPScheduleForm = () => {
                                         id="combo-box-demo"
                                         options={optionsRoom}
                                         noOptionsText={"Нет кабинетов"}
-                                        getOptionLabel={(option) => option.label}
+                                            getOptionLabel={(option) => typeof option === 'object' && option !== null
+                                                ? (option as OptionType).label
+                                                : ''
+                                            }
                                         renderInput={(params) => <TextField
                                             required
-                                            InputLabelProps={{
-                                                style: {
-                                                    fontFamily: 'Vollda'
-                                                }
-                                            }}
                                             {...params}
                                             label="Кабинет" />}
-                                        onChange={(event, newValue) => {
-                                            setID_Room(newValue?.value);
+                                            onChange={(_, newValue) => {
+                                                const typedNewValue = newValue as OptionType;
+                                                if (typedNewValue === null) {
+                                                    setID_Room(null);
+                                                }
+                                                else {
+                                                    setID_Room(typedNewValue.value);
+                                                }
                                         }}
                                     />
                                     <StyledAutocomplete
@@ -342,18 +430,22 @@ const AddPScheduleForm = () => {
                                         id="combo-box-demo"
                                         options={optionsNLessons}
                                         noOptionsText={"Произошла ошибка"}
-                                        getOptionLabel={(option) => option.label}
+                                            getOptionLabel={(option) => typeof option === 'object' && option !== null
+                                                ? (option as OptionTypeNumberLessons).label
+                                                : ''
+                                            }
                                         renderInput={(params) => <TextField
                                             required
-                                            InputLabelProps={{
-                                                style: {
-                                                    fontFamily: 'Vollda'
-                                                }
-                                            }}
                                             {...params}
                                             label="Номер занятия" />}
-                                        onChange={(event, newValue) => {
-                                            setNumberLesson(newValue?.value);
+                                            onChange={(_, newValue) => {
+                                                const typedNewValue = newValue as OptionTypeNumberLessons;
+                                                if (typedNewValue === null) {
+                                                    setNumberLesson(null);
+                                                }
+                                                else {
+                                                    setNumberLesson(typedNewValue.value);
+                                                }
                                         }}
                                     />
                                     <StyledAutocomplete
@@ -361,18 +453,22 @@ const AddPScheduleForm = () => {
                                         id="combo-box-demo"
                                         options={optionsDOW}
                                         noOptionsText={"Произошла ошибка"}
-                                        getOptionLabel={(option) => option.label}
+                                            getOptionLabel={(option) => typeof option === 'object' && option !== null
+                                                ? (option as OptionTypeString).label
+                                                : ''
+                                            }
                                         renderInput={(params) => <TextField
                                             required
-                                            InputLabelProps={{
-                                                style: {
-                                                    fontFamily: 'Vollda'
-                                                }
-                                            }}
                                             {...params}
                                             label="День недели" />}
-                                        onChange={(event, newValue) => {
-                                            setDaysOfWeek(newValue?.value);
+                                            onChange={(_, newValue) => {
+                                                const typedNewValue = newValue as OptionTypeString;
+                                                if (typedNewValue === null) {
+                                                    setDaysOfWeek(null);
+                                                }
+                                                else {
+                                                    setDaysOfWeek(typedNewValue.value);
+                                                }
                                         }}
                                     />
                                     <StyledAutocomplete
@@ -380,18 +476,22 @@ const AddPScheduleForm = () => {
                                         id="combo-box-demo"
                                         options={optionsKOS}
                                         noOptionsText={"Произошла ошибка"}
-                                        getOptionLabel={(option) => option.label}
+                                            getOptionLabel={(option) => typeof option === 'object' && option !== null
+                                                ? (option as OptionTypeString).label
+                                                : ''
+                                            }
                                         renderInput={(params) => <TextField
                                             required
-                                            InputLabelProps={{
-                                                style: {
-                                                    fontFamily: 'Vollda'
-                                                }
-                                            }}
                                             {...params}
                                             label="Тип расписание" />}
-                                        onChange={(event, newValue) => {
-                                            setKindOfSchedule(newValue?.value);
+                                            onChange={(_, newValue) => {
+                                                const typedNewValue = newValue as OptionTypeString;
+                                                if (typedNewValue === null) {
+                                                    setKindOfSchedule(null);
+                                                }
+                                                else {
+                                                    setKindOfSchedule(typedNewValue.value);
+                                                }
                                         }}
                                     />
                                     <ThemeProvider theme={theme}>
@@ -400,7 +500,7 @@ const AddPScheduleForm = () => {
                                                 id="standard-suffix-shrink"
                                                 label="Количество пар в 1-ом семестре"
                                                 variant="standard"
-                                                color='customColor'
+                                                color='warning'
                                                 value={FirstHours || ''}
                                                 InputProps={{
                                                     style: {
@@ -457,7 +557,7 @@ const AddPScheduleForm = () => {
                                                 label="Количество пар во 2-ом семестре"
                                                 variant="standard"
                                                 value={SecondHours || ''}
-                                                color='customColor'
+                                                color='warning'
                                                 InputProps={{
                                                     style: {
                                                         fontFamily: 'Vollda',
@@ -558,7 +658,7 @@ const AddPScheduleForm = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Группа"
                                     id="Group" 
                                     variant="outlined"
@@ -585,7 +685,7 @@ const AddPScheduleForm = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Преподаватель"
                                     id="Teacher"
                                     variant="outlined"
@@ -612,7 +712,7 @@ const AddPScheduleForm = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Учебный предмет"
                                     id="Lesson"
                                     variant="outlined"
@@ -639,7 +739,7 @@ const AddPScheduleForm = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Всего пар в неделю"
                                     id="LessonWeek"
                                     variant="outlined"
@@ -666,9 +766,9 @@ const AddPScheduleForm = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Количество пар в числите"
-                                    id="FirstSemester" value={FirstHours} onChange={(e) => setFirstHour(e.target.value)}
+                                    id="FirstSemester" value={FirstHours} onChange={(e) => setFirstHour(Number(e.target.value))}
                                     variant="outlined"
                                     type='number'
                                     className='form-control'
@@ -694,9 +794,9 @@ const AddPScheduleForm = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Количество пар в знаменателе"
-                                    id="SecondSemester" value={SecondHours} onChange={(e) => setSecondHour(e.target.value)}
+                                    id="SecondSemester" value={SecondHours} onChange={(e) => setSecondHour(Number(e.target.value))}
                                     variant="outlined"
                                     type='number'
                                     className='form-control'

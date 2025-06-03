@@ -1,7 +1,12 @@
 ﻿import { useState, useEffect } from 'react';
+interface SubBurden {
+    ID_TeacherPlan: number;
+    NumeratorPlan: number;
+    DenominatorPlan: number;
+}
 // Кастомный хук для получения данных
 export const GetAllSubBurden = () => {
-    const [dataAllSubBurden, setAllSubBurden] = useState([]); // Данные о группе
+    const [dataAllSubBurden, setAllSubBurden] = useState<SubBurden[]>([]); // Данные о группе
     const [SubBurdenloading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {

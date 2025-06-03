@@ -1,8 +1,10 @@
 ﻿import { useState, useEffect } from 'react';
-
+interface NameGroup {
+    NameGroup: string;
+}
 // Кастомный хук для получения данных
 export const GetNamegroup = () => {
-    const [dataGroupName, setGroupName] = useState([]); // Данные о ролях
+    const [dataGroupName, setGroupName] = useState<NameGroup[]>([]); // Данные о ролях
     const [loading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {

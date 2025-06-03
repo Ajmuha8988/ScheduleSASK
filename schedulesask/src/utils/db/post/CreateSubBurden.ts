@@ -56,9 +56,14 @@ export const GeneralSubBurdenService = () => {
                     return 'Готово!';
                 }
             } catch (error) {
-                throw {
-                    errormessage1: error.firstmessage,
-                    errormessage2: error.secondmessage,
+                if (error instanceof Error) {
+                    throw new Error(JSON.stringify({
+                        errormessage1: error.firstmessage,
+                        errormessage2: error.secondmessage,
+                    }));
+                }
+                else {
+                    console.log(String(error));
                 }
             }
     };

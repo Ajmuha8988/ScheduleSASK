@@ -7,7 +7,7 @@ interface PScheduleRequestBody {
     ID_Lesson: bigint;
     ID_Room: bigint;
     ID_user: bigint;
-    NumberLessons: number;
+    NumberLesson: number;
     DaysOfWeek: string;
     KindOfSchedules: string;
     CombinedCouple: boolean;
@@ -26,7 +26,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
             KindOfSchedules = @kindofschedules;`;
             const resultCheckTwo = await pool.request()
                 .input('id_Groups', sql.NVarChar, body.NameGroup)
-                .input('numberLessons', sql.Int, body.NumberLessons)
+                .input('numberLessons', sql.Int, body.NumberLesson)
                 .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                 .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                 .query(checkQueryTwo);
@@ -37,7 +37,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
 
             const resultCheckTeachers = await pool.request()
                 .input('id_Teachers', sql.BigInt, body.ID_user)
-                .input('numberLessons', sql.Int, body.NumberLessons)
+                .input('numberLessons', sql.Int, body.NumberLesson)
                 .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                 .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                 .query(checkQueryTeachers);
@@ -56,7 +56,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                 const resultCheckTwoTeachers = await pool.request()
                     .input('id_Groups', sql.NVarChar, body.NameGroup)
                     .input('id_Teachers', sql.BigInt, body.ID_user)
-                    .input('numberLessons', sql.Int, body.NumberLessons)
+                    .input('numberLessons', sql.Int, body.NumberLesson)
                     .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                     .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                     .query(checkQueryTwoTeachers);
@@ -78,7 +78,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                     KindOfSchedules = @kindofschedules;`;
                                     const resultCheckRoom = await pool.request()
                                         .input('id_rooms', sql.BigInt, body.ID_Room)
-                                        .input('numberLessons', sql.Int, body.NumberLessons)
+                                        .input('numberLessons', sql.Int, body.NumberLesson)
                                         .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                                         .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                                         .query(checkQueryRoom);
@@ -96,7 +96,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                             .input('id_Lesson', sql.BigInt, body.ID_Lesson)
                                             .input('id_Room', sql.BigInt, body.ID_Room)
                                             .input('id_User', sql.BigInt, body.ID_user)
-                                            .input('numberLessons', sql.Int, body.NumberLessons)
+                                            .input('numberLessons', sql.Int, body.NumberLesson)
                                             .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                                             .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                                             .query(insertQuery);
@@ -124,7 +124,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                     KindOfSchedules = @kindofschedules;`;
                                     const resultCheckGroups = await pool.request()
                                         .input('id_Teachers', sql.BigInt, id_user)
-                                        .input('numberLessons', sql.Int, body.NumberLessons)
+                                        .input('numberLessons', sql.Int, body.NumberLesson)
                                         .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                                         .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                                         .query(checkQueryGroups);
@@ -150,7 +150,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                                     .input('id_Lesson', sql.BigInt, body.ID_Lesson)
                                                     .input('id_Room', sql.BigInt, body.ID_Room)
                                                     .input('id_User', sql.BigInt, body.ID_user)
-                                                    .input('numberLessons', sql.Int, body.NumberLessons)
+                                                    .input('numberLessons', sql.Int, body.NumberLesson)
                                                     .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                                                     .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                                                     .query(insertQuery);
@@ -174,7 +174,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                                 KindOfSchedules = @kindofschedules;`;
                                                 const resultCheckValidateGroups = await pool.request()
                                                     .input('id_Teachers', sql.BigInt, id_group)
-                                                    .input('numberLessons', sql.Int, body.NumberLessons)
+                                                    .input('numberLessons', sql.Int, body.NumberLesson)
                                                     .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                                                     .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                                                     .query(checkQueryValidateGroups);
@@ -193,7 +193,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                                         .input('id_Lesson', sql.BigInt, body.ID_Lesson)
                                                         .input('id_Room', sql.BigInt, body.ID_Room)
                                                         .input('id_User', sql.BigInt, body.ID_user)
-                                                        .input('numberLessons', sql.Int, body.NumberLessons)
+                                                        .input('numberLessons', sql.Int, body.NumberLesson)
                                                         .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                                                         .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                                                         .query(insertQuery);
@@ -224,7 +224,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                 KindOfSchedules = @kindofschedules;`;
                                 const resultCheckGroups = await pool.request()
                                     .input('id_Teachers', sql.BigInt, id_user)
-                                    .input('numberLessons', sql.Int, body.NumberLessons)
+                                    .input('numberLessons', sql.Int, body.NumberLesson)
                                     .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                                     .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                                     .query(checkQueryGroups);
@@ -248,7 +248,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                             .input('id_Lesson', sql.BigInt, body.ID_Lesson)
                                             .input('id_Room', sql.BigInt, body.ID_Room)
                                             .input('id_User', sql.BigInt, body.ID_user)
-                                            .input('numberLessons', sql.Int, body.NumberLessons)
+                                            .input('numberLessons', sql.Int, body.NumberLesson)
                                             .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                                             .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                                             .query(insertQuery);
@@ -280,7 +280,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
             KindOfSchedules = @kindofschedules;`;
             const resultCheckRoom = await pool.request()
                 .input('id_rooms', sql.BigInt, body.ID_Room)
-                .input('numberLessons', sql.Int, body.NumberLessons)
+                .input('numberLessons', sql.Int, body.NumberLesson)
                 .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                 .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                 .query(checkQueryRoom);
@@ -296,7 +296,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
 
                 const resultCheck = await pool.request()
                     .input('id_Groups', sql.NVarChar, body.NameGroup)
-                    .input('numberLessons', sql.Int, body.NumberLessons)
+                    .input('numberLessons', sql.Int, body.NumberLesson)
                     .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                     .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                     .query(checkQuery);
@@ -313,12 +313,12 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                     KindOfSchedules = @kindofschedules;`;
                     const resultCheckTeacher = await pool.request()
                         .input('id_Teachers', sql.BigInt, body.ID_user)
-                        .input('numberLessons', sql.Int, body.NumberLessons)
+                        .input('numberLessons', sql.Int, body.NumberLesson)
                         .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                         .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                         .query(checkQueryTeacher);
                         console.log(body.ID_user);
-                        console.log(body.NumberLessons);
+                        console.log(body.NumberLesson);
                         console.log(body.DaysOfWeek);
                         console.log(body.KindOfSchedules);
                         console.log(resultCheckTeacher.recordset.length);
@@ -414,7 +414,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                     .input('id_Lesson', sql.BigInt, body.ID_Lesson)
                                     .input('id_Room', sql.BigInt, body.ID_Room)
                                     .input('id_User', sql.BigInt, body.ID_user)
-                                    .input('numberLessons', sql.Int, body.NumberLessons)
+                                    .input('numberLessons', sql.Int, body.NumberLesson)
                                     .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                                     .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                                     .query(insertQuery);

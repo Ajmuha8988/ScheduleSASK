@@ -1,8 +1,13 @@
 ﻿import { useState, useEffect } from 'react';
-
+interface Teacher {
+    Lastname: string;
+    Firstname: string;
+    Patronymic: string; // Средний может отсутствовать
+    Temp_ID_User: number;
+}
 // Кастомный хук для получения данных
 export const GetAllTeacher = () => {
-    const [dataStudents, setDataStudents] = useState([]);
+    const [dataStudents, setDataStudents] = useState<Teacher[]>([]);
 
     useEffect(() => {
         fetch('http://localhost:8080/AllTeachers')
