@@ -25,6 +25,7 @@
                 densityCompact: 'Компактная плотность',
                 densityComfortable: 'Комфортная плотность',
                 noRowsLabel: 'Здесь пока нету студентов',
+                noResultsOverlayLabel: 'Студент не найден',
                 errorOverlayDefaultLabel: 'Ошибка загрузки данных',
                 footerPageNumberInputTooltipLabel: 'Номер страницы',
                 footerPagination: '{from}-{to} из {count}',

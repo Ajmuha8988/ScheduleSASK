@@ -1,7 +1,13 @@
 ﻿import { useState, useEffect } from 'react';
+interface Member {
+    ID_members_group: string;
+    Lastname: string;
+    Firstname: string;
+    Patronymic: string;
+}
 // Кастомный хук для получения данных
 export const GetMember = () => {
-    const [dataMembers, setadataMembers] = useState([]); // Данные о группе
+    const [dataMembers, setadataMembers] = useState<Member[]>([]); // Данные о группе
     const [loading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {

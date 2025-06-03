@@ -1,7 +1,11 @@
 ﻿import { useState, useEffect } from 'react';
+interface NameGroup {
+    ID_Group: bigint;
+    NameGroup: string;
+}
 // Кастомный хук для получения данных
 export const GetNameGroups = () => {
-    const [dataNameGroup, setaNameGroup] = useState([]); // Данные о группе
+    const [dataNameGroup, setaNameGroup] = useState<NameGroup[]>([]); // Данные о группе
     const [loading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {

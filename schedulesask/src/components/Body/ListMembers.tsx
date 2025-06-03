@@ -1,76 +1,39 @@
-﻿import React from 'react';
-import "bootstrap/dist/css/bootstrap.min.css";
-import { DataGrid } from '@mui/x-data-grid';
+﻿import "bootstrap/dist/css/bootstrap.min.css";
+import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import { GetMember } from '../../utils/db/get/GetMembers';
 import { MemberService } from '../../utils/db/post/AddMembers';
 /*import { ruRU } from '@mui/x-data-grid/locales'*/
 import localization from '../../utils/Localization/Ru';
-import { DeleteMemberService } from '../../utils/db/delete/deleteMember';
+import { DeleteMemberService } from '../../utils/db/delete/deletemember';
+
+interface RowType {
+    ID_members_group: string; // Например, число или строка
+}
+
 
 const theme = createTheme({
     typography: {
         fontFamily: ['"Vollda"'].join(',')
-    },
-    components: {
-        MuiDataGrid: {
-            styleOverrides: {
-                row: {
-                    "&.Mui-selected": {
-                        backgroundColor: "inherit",
-                        color: "yellow",
-                        "&:hover": {
-                            backgroundColor: "inherit"
-                        },
-                        outlineColor: "white"
-                    }
-                },
-                columnHeader: {
-                    backgroundColor: '#fff', // Цвет фона заголовка колонки
-                    color: '#000',              // Цвет шрифта
-                    outlineColor: "white"
-                },
-                root: {
-                    color: "#fff",
-                    '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                            borderColor: 'white',
-                        },
-                        '&:hover fieldset': {
-                            borderColor: 'white',
-                        },
-                        '&.Mui-focused fieldset': {
-                            borderColor: '#fff',
-                        },
-                    },
-                    '.MuiInputBase-root': {
-                        color: '#fff'
-                    },
-                    backgroundColor: "#000",
-                    outlineColor: "white"
-                },
-                cell: {
-                    color: "#fff",
-                    outlineColor: "white"
-
-                },
-            },
-        },
     },
 });
 
 // Компонент списка членов
 const ListMembers = () => {
     const { deleteGroupMember } = DeleteMemberService();
-    const DeleteMemberSubmit = async (idStudent) => {
+    const DeleteMemberSubmit = async (idStudent: string) => {
         try {
             await deleteGroupMember({
                 ID_Students: idStudent 
             });
             window.location.reload();
         } catch (error) {
-            alert('Ошибка на сервере. Повторите попытку позже.');
+            if (error instanceof Error) {
+                alert('Ошибка на сервере. Повторите попытку позже.');
+            } else {
+                alert('Ошибка на сервере. Повторите попытку позже.');
+            } 
         }
 
     };
@@ -86,7 +49,7 @@ const ListMembers = () => {
             headerName: '',
             sortable: false,
             filterable: false,
-            renderCell: (params) => ( // кнопка удаления внутри ячейки
+            renderCell: (params: GridRenderCellParams<RowType>) => ( // кнопка удаления внутри ячейки
                 <form className="font-for-headers" onSubmit={() => DeleteMemberSubmit(params.row.ID_members_group)}>
                     <button type="submit" className="btn btn-warning text-light" >Удалить</button>
                 </form>
@@ -94,7 +57,6 @@ const ListMembers = () => {
             flex: 1
         }
     ];// Создаем тему шрифта Vollda
-
     const { dataMembers, loading } = GetMember();
     const { namegroups } = MemberService();
     return (
@@ -107,8 +69,13 @@ const ListMembers = () => {
                 ) : (
                     <ThemeProvider theme={theme}>
                             <DataGrid
-                                rows={ dataMembers.map((row, index) => ({ ...row, ID: index + 1 })) || []}
-                                columns={columns}
+                                rows={
+                                    dataMembers
+                                        ?.filter(row => typeof row === 'object' && row !== null && 'ID_members_group' in row)
+                                        ?.map((row, index) => ({ ...row, ID: index + 1 }))
+                                    ?? []
+                                
+                                } columns={columns}
                                 getRowId={(row) => row.ID} // Временный идентификатор, основанный на индексе массива
                                 showToolbar
                                 className="mt-2 font-for-headers"
@@ -116,9 +83,31 @@ const ListMembers = () => {
                                 disableColumnFilter
                                 disableColumnSelector
                                 disableColumnMenu
-                                label={<span style={{ color: '#fff' }}>{namegroups}</span>}
+                                label={namegroups || ""}
                                 localeText={localization.ru}
                                 sx={{
+                                    cell: {
+                                        color: "#fff",
+                                        outlineColor: "white"
+
+                                    },
+                                color: "#fff",
+                                backgroundColor: "#000",
+                                outlineColor: "white",
+                                "& .MuiOutlinedInput-root": {
+                                    fieldset: {
+                                        borderColor: "white !important",
+                                    },
+                                    ":hover fieldset": {
+                                    borderColor: "white",
+                                    },
+                                    ".Mui-focused fieldset": {
+                                    borderColor: "#fff",
+                                    },
+                                },
+                                    ".MuiInputBase-root": {
+                                    color: "#fff",
+                                    },
                                     "&.MuiDataGrid-root .MuiDataGrid-columnHeader:focus, &.MuiDataGrid-root .MuiDataGrid-cell:focus, &.MuiDataGrid-root .MuiDataGrid-row:focus  ":
                                     {
                                         outline: "none",
@@ -126,9 +115,22 @@ const ListMembers = () => {
                                     "& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus": {
                                         outline: "none !important",
                                     },
+                                    "& .MuiDataGrid-columnHeader":
+                                    {
+                                        backgroundColor: '#fff', // Цвет фона заголовка колонки
+                                        color: '#000',              // Цвет шрифта
+                                        outlineColor: "white"
+                                    },
                                     "& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-columnHeader:focus":
                                     {
                                         outline: "none !important",
+                                    },
+                                    "& .MuiDataGrid-row.Mui-selected": { // Новый блок для выделения строки
+                                        backgroundColor: "inherit !important"
+                                    },
+                                    "& .MuiDataGrid-row": {
+                                        backgroundColor: "inherit",
+                                        outlineColor: "white" // Or 'transparent' or whatever color you'd like
                                     },
                                     "& .MuiDataGrid-row:hover": {
                                         backgroundColor: "inherit" // Or 'transparent' or whatever color you'd like
