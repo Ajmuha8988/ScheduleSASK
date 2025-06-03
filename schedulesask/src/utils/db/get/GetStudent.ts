@@ -2,7 +2,7 @@
 interface Student {
     Lastname: string;
     Firstname: string;
-    Patronymic?: string; // Средний может отсутствовать
+    Patronymic: string; // Средний может отсутствовать
     Temp_ID_User: number;
 }
 // Кастомный хук для получения данных

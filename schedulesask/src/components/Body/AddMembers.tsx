@@ -90,7 +90,12 @@ const AddMembersForm = () => {
                         label="Студент" />}
                         onChange={(_, newValue) => {
                         const typedNewValue = newValue as OptionType;
-                        setID_Students(typedNewValue.value);
+                            if (typedNewValue === null) {
+                                setID_Students(null);
+                            }
+                            else {
+                                setID_Students(typedNewValue.value);
+                            }
                     }}
                 />
                 {error && <p style={{ color: 'red' }}>{error}</p>}

@@ -16,10 +16,18 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { inputBaseClasses } from '@mui/material/InputBase';
 import { useNavigate } from 'react-router-dom';
 
+interface OptionType {
+    label: string;
+    value: bigint;
+}
+
 const theme = createTheme({
     palette: {
-        customColor: {
+        warning: {
             main: '#ffc107', // Замените на нужный вам цвет
+        },
+        info: {
+            main: '#616161', // Замените на нужный вам цвет
         },
     },
     
@@ -59,14 +67,14 @@ const StyledAutocomplete = styled(Autocomplete)({
 const AddPlanForm = () => {
     const navigate = useNavigate();
     const { addPlan } = PlanDataService();
-    const [ID_Groups, setID_Group] = useState(null);
-    const [ID_Lessons, setID_Lesson] = useState(null);
-    const [NumberHourInWeeks, setNumberHourInWeeks] = useState(null);
-    const [ID_Teachers, setID_Teacher] = useState(null);
+    const [ID_Groups, setID_Group] = useState<bigint | null>(null); 
+    const [ID_Lessons, setID_Lesson] = useState<bigint | null>(null); 
+    const [NumberHourInWeeks, setNumberHourInWeeks] = useState<number | null>(null);
+    const [ID_Teachers, setID_Teacher] = useState<bigint | null>(null); 
     const [TimeForLessons, setTimeForLessons] = useState<number | null>(null);
-    const [KindOfSemester, setKindOfSemester] = useState(null);
-    const [FirstSemesterHours, setFirstSemesterHour] = useState(null);
-    const [SecondSemesterHours, setSecondSemesterHours] = useState(null);
+    const [KindOfSemesters, setKindOfSemester] = useState<string>("");
+    const [FirstSemesterHours, setFirstSemesterHour] = useState<string>("");
+    const [SecondSemesterHours, setSecondSemesterHours] = useState<string>("");
     const [Success, SetSuccess] = useState<string | null>(null);
     const [errorMessage, SetErrorMessage] = useState<string | null>(null);
     const group = GetAllgroups();
@@ -83,32 +91,43 @@ const AddPlanForm = () => {
     const optionsTeacher = teacher.map(teachers => ({
         label: `${teachers.Lastname} ${teachers.Firstname} ${teachers.Patronymic}`,
         value: teachers.Temp_ID_User,
+
     }));
-    const [error, setError] = useState<string | null>(null);
-    const handleSelectTeacher = async (newValue) => {
+    const handleSelectTeacher = async (newValue: OptionType) => {
         if (!newValue || !newValue.value) {
             setFirstSemesterHour('');
             setSecondSemesterHours('');
         }
         try {
             // Получаем часы преподавателя непосредственно из массива учителей
-            const selectedTeacher = teacher.find(t => t.Temp_ID_User === newValue.value);
+            const selectedTeacher = teacher.find(
+                (t) => BigInt(t.Temp_ID_User) === BigInt(newValue.value)
+            );
 
             if (selectedTeacher && selectedTeacher.FirstSemesterHour !== undefined
                 && selectedTeacher.SecondSemesterHour !== undefined) {
                 setFirstSemesterHour(selectedTeacher.FirstSemesterHour.toString());
                 setSecondSemesterHours(selectedTeacher.SecondSemesterHour.toString());
             } else {
-                setFirstSemesterHour(null);
-                setSecondSemesterHours(null);
+                setFirstSemesterHour('');
+                setSecondSemesterHours('');
                 console.error("Данные о числе часов отсутствуют");
             }
         } catch (err) {
-            console.error(err.message);
+            if (err instanceof Error) {
+                console.log(err.message);
+            } else {
+                console.log(String(err)); // Конвертируем err в строку, если это не стандартный Error
+            }
         }
     };
     const AddPlanSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!ID_Groups || !ID_Lessons || !TimeForLessons || !ID_Teachers
+            || !NumberHourInWeeks || !KindOfSemesters) {
+            console.log("Невозможно добавить учебный план.");
+            return;
+        }
         try {
             const successfullPlan =  await addPlan({
                 ID_Group: ID_Groups,
@@ -116,13 +135,17 @@ const AddPlanForm = () => {
                 TimeForLesson: TimeForLessons,
                 ID_Teacher: ID_Teachers,
                 NumberHourInWeek: NumberHourInWeeks,
-                KindOfSemester: KindOfSemester
+                KindOfSemester: KindOfSemesters
             });
             SetErrorMessage(null);
             SetSuccess(successfullPlan)
             setTimeout(() => window.location.reload(), 1000);
         } catch (error) {
-            SetErrorMessage(error.message);
+            if (error instanceof Error) {
+                SetErrorMessage(error.message);
+            } else {
+                SetErrorMessage(String(error)); // Конвертируем err в строку, если это не стандартный Error
+            }
             SetSuccess(null);
         }
 
@@ -134,19 +157,24 @@ const AddPlanForm = () => {
                 id="combo-box-demo"
                 options={optionsTeacher}
                 noOptionsText={"Нет преподавателей"}
-                getOptionLabel={(option) => option.label}
+                getOptionLabel={(option) => typeof option === 'object' && option !== null
+                    ? (option as OptionType).label
+                    : ''
+                }
                 renderInput={(params) => <TextField
                     required
-                    InputLabelProps={{
-                        style: {
-                            fontFamily: 'Vollda'
-                        }
-                    }}
                     {...params}
                     label="Преподаватель" />}
-                onChange={(event, newValue) => {
-                    setID_Teacher(newValue?.value);
-                    handleSelectTeacher(newValue);
+                onChange={(_, newValue) => {
+                    const typedNewValue = newValue as OptionType;
+                    if (typedNewValue === null) {
+                        setID_Teacher(null);
+                        handleSelectTeacher({ label: '', value: BigInt(0) })
+                    }
+                    else {
+                        setID_Teacher(typedNewValue.value);
+                        handleSelectTeacher(typedNewValue);
+                    }
                 }}
             />
             <StyledAutocomplete
@@ -154,18 +182,21 @@ const AddPlanForm = () => {
                 id="combo-box-demo"
                 options={optionsGroup}
                 noOptionsText={"Нет групп"}
-                getOptionLabel={(option) => option.label}
+                getOptionLabel={(option) => typeof option === 'object' && option !== null
+                    ? (option as OptionType).label
+                    : ''
+                }
                 renderInput={(params) => <TextField
                     required
-                    InputLabelProps={{
-                        style: {
-                            fontFamily: 'Vollda'
-                        }
-                    }}
                     {...params}
                     label="Группа" />}
-                onChange={(event, newValue) => {
-                    setID_Group(newValue?.value);
+                onChange={(_, newValue) => {
+                    const typedNewValue = newValue as OptionType;
+                    if (typedNewValue === null) {
+                        setID_Group(null);
+                    } else {
+                        setID_Group(typedNewValue.value);
+                    }
                 }}
             />
             <StyledAutocomplete
@@ -173,18 +204,21 @@ const AddPlanForm = () => {
                 id="combo-box-demo"
                 options={optionsLesson}
                 noOptionsText={"Нет учебных предметов"}
-                getOptionLabel={(option) => option.label}
+                getOptionLabel={(option) => typeof option === 'object' && option !== null
+                    ? (option as OptionType).label
+                    : ''
+                }
                 renderInput={(params) => <TextField
                     required
-                    InputLabelProps={{
-                        style: {
-                            fontFamily: 'Vollda'
-                        }
-                    }}
                     {...params}
                     label="Учебный предмет" />}
-                onChange={(event, newValue) => {
-                    setID_Lesson(newValue?.value);
+                onChange={(_, newValue) => {
+                    const typedNewValue = newValue as OptionType;
+                    if (typedNewValue === null) {
+                        setID_Lesson(null);
+                    } else {
+                        setID_Lesson(typedNewValue.value);
+                    }
                 }}
             />
             <ThemeProvider theme={theme} >
@@ -204,9 +238,9 @@ const AddPlanForm = () => {
                                 color: '#616161',
                             },
                         }}
-                        color='customColor' // Используем созданный нами цвет
+                        color='warning' // Используем созданный нами цвет
                         label="Всего часов на предмет"
-                        id="TimeForLessons" value={TimeForLessons} onChange={(e) => setTimeForLessons(e.target.value)}
+                        id="TimeForLessons" value={TimeForLessons} onChange={(e) => setTimeForLessons(Number(e.target.value))}
                         variant="outlined"
                         type='number'
                         className='form-control'
@@ -231,9 +265,9 @@ const AddPlanForm = () => {
                                 color: '#616161',
                             },
                         }}
-                        color='customColor' // Используем созданный нами цвет
+                        color='warning' // Используем созданный нами цвет
                         label="Количество часов в неделю"
-                        id="NumberHourInWeeks" value={NumberHourInWeeks} onChange={(e) => setNumberHourInWeeks(e.target.value)}
+                        id="NumberHourInWeeks" value={NumberHourInWeeks} onChange={(e) => setNumberHourInWeeks(Number(e.target.value))}
                         variant="outlined"
                         type='number'
                         className='form-control'
@@ -244,15 +278,14 @@ const AddPlanForm = () => {
             <ThemeProvider theme={theme}>
                 <div className="mt-2 w-25 smw-100">
                     <FormControl fullWidth >
-                        <InputLabel id="demo-select-small-label" className='font-for-headers' color='#616161' required>Семестр</InputLabel>
+                        <InputLabel id="demo-select-small-label" className='font-for-headers' color='info' required>Семестр</InputLabel>
                         <Select
                             labelId="demo-select-small-label"
                             id="demo-select-small"
-                            value={KindOfSemester}
+                            value={KindOfSemesters}
                             label="Семестр"
                             onChange={(e: SelectChangeEvent) => setKindOfSemester(e.target.value)}
-                            color='customColor'
-                            fontFamily='Vollda'
+                            color='warning'
                             sx={{
                                 fontFamily: "Vollda",
                                 color: '#616161',
@@ -269,7 +302,7 @@ const AddPlanForm = () => {
                         id="standard-suffix-shrink"
                         label="1-ый семестр"
                         variant="standard"
-                        color='customColor'
+                        color='warning'
                         value={FirstSemesterHours || ''}
                         InputProps={{
                             style: {
@@ -326,7 +359,7 @@ const AddPlanForm = () => {
                         label="2-ой семестр"
                         variant="standard"
                         value={SecondSemesterHours || ''}
-                        color='customColor'   
+                        color='warning'   
                         InputProps={{
                             style: {
                                 fontFamily: 'Vollda',
