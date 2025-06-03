@@ -18,9 +18,12 @@
                 columnMenuLabelShowColumnsSelector: 'Показать выбор колонок',
                 columnMenuFilterButtonText: 'Фильтр',
                 columnMenuHideColumn: 'Скрыть',
+                columnMenuSortAscending: 'Сортировка по возрастанию',
+                columnMenuSortDescending: "Сортировка по убыванию",
                 columnMenuUnsort: 'Отменить сортировку',
-                columnMenuSortAsc: 'Сортировка по возрастанию',
-                columnMenuSortDesc: 'Сортировка по убыванию',
+                columnHeaderSortIconLabel: '',
+                columnMenuSortAsc: 'Сортировать по возрастанию',
+                columnMenuSortDesc: 'Сортировать по убыванию',
                 densityStandard: 'Стандартная плотность',
                 densityCompact: 'Компактная плотность',
                 densityComfortable: 'Комфортная плотность',
@@ -76,5 +79,7 @@ const ruForPlan = {
     columnMenuThirdStateText: 'Частично выбрано',
     toolbarQuickFilterPlaceholder: 'Поиск…',
     toolbarQuickFilterLabel: 'Поиск',
+    columnHeaderSortIconLabel: '',
+    noResultsOverlayLabel: 'Учебный план не найден',
 };
 export default { ru, ruForPlan };

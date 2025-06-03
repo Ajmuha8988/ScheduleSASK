@@ -144,7 +144,9 @@ const ListMembers = () => {
                                     "& .MuiSvgIcon-root": {
                                         fill: "#ffffff", // Цвет иконок
                                     },
+
                                     maxHeight: 640,
+
                                 }}
                                 slotProps={{
                                     toolbar: {

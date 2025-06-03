@@ -1,8 +1,19 @@
 ﻿import { useState, useEffect } from 'react';
 
+interface Plan {
+    Lastname: string;
+    Firstname: string;
+    Patronymic: string;
+    NameLesson: string;
+    NameGroup: string;
+    CallNumber: string;
+    TimeForLesson: number;
+    NumberHourInWeek: number;
+    KindOfSemester: string;
+}
 // Кастомный хук для получения данных
 export const GetPlan = () => {
-    const [dataPlan, setPlan] = useState([]); // Данные о ролях
+    const [dataPlan, setPlan] = useState<Plan[]>([]); // Данные о ролях
     const [loadingPlan, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {
