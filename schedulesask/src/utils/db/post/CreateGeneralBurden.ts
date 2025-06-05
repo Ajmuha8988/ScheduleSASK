@@ -24,8 +24,15 @@ export const GeneralBurdenService = () => {
                     return data.message;
                 }
             } catch (error) {
-                console.error("Ошибка:", error);
-                throw new Error(error.message || 'Ошибка при установке нагрузки преподавателя.');
+                let errorMessage = '';
+                if (typeof error === 'object' && error !== null && 'message' in error) {
+                    // Приводим тип error к типу Error
+                    const typedError = error as Error;
+                    errorMessage = typedError.message;
+                } else {
+                    errorMessage = 'Произошла неизвестная ошибка при установке нагрузки преподавателя.';
+                }
+                throw new Error(errorMessage);
             }
         };
 

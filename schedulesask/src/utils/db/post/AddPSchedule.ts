@@ -8,7 +8,12 @@
     KindOfSchedules: string;
     CombinedCouple: boolean;
 }
-
+interface ServerErrors {
+    errorInServer?: string;
+    firstError?: string;
+    HourError?: string;
+    TeacherError?: string;
+}
 export const PScheduleService = () => {
     const addPSchedule = async (pscheduleData: PScheduleData) => {
         try {
@@ -59,12 +64,11 @@ export const PScheduleService = () => {
                 }
             }
         } catch (error) {
-                throw new Error(JSON.stringify({
-                    errormessageserver: error.errorInServer,
-                    firsterrormessage: error.firstError,
-                    hourerrormessage: error.HourError,
-                    teacherrormessage: error.TeacherError,
-                }));
+            const serverErrors: ServerErrors = {};
+            if (typeof error === 'object' && error !== null) {
+                Object.assign(serverErrors, error);
+            }
+            throw new Error(JSON.stringify(serverErrors));
             
         }
     };

@@ -22,8 +22,15 @@ export const changeGroupService = () => {
                 throw new Error(data.error);
             }
         } catch (error) {
-            console.error("Ошибка:", error);
-            throw new Error(error.message || 'Ошибка при редактировании.');
+            let errorMessage = '';
+            if (typeof error === 'object' && error !== null && 'message' in error) {
+                // Приводим тип error к типу Error
+                const typedError = error as Error;
+                errorMessage = typedError.message;
+            } else {
+                errorMessage = 'Произошла неизвестная ошибка при редактировании.';
+            }
+            throw new Error(errorMessage);
         }
     };
 

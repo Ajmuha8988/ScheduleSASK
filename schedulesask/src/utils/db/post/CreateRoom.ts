@@ -23,8 +23,15 @@ export const RoomService = () => {
                     alert("Ошибка при создании кабинета");
                 }
             } catch (error) {
-                console.error("Ошибка:", error);
-                throw new Error(error.message || 'Произошла ошибка при создании кабинета.');
+                let errorMessage = '';
+                if (typeof error === 'object' && error !== null && 'message' in error) {
+                    // Приводим тип error к типу Error
+                    const typedError = error as Error;
+                    errorMessage = typedError.message;
+                } else {
+                    errorMessage = 'Произошла неизвестная ошибка при создании кабинета.';
+                }
+                throw new Error(errorMessage);
             }
     };
     return { addRoom };

@@ -62,11 +62,12 @@ const RegisterButton = () => {
                 } catch (error) {
                     if (error instanceof Error) {
                         const parsedError = JSON.parse(error.message);
+                        // Выводим наиболее значимую ошибку
                         setErrorEmail(parsedError.message);
                         setErrorCall(parsedError.messagecall);
                     } else {
                         setErrorEmail(String(error));
-                        setErrorCall(String(error));// Конвертируем err в строку, если это не стандартный Error
+                        setErrorCall(String(error));
                     }
                 }
             }

@@ -1,5 +1,4 @@
 ﻿import { useNavigate } from 'react-router-dom';
-import { GetTeacherID } from '../get/GetTeacher';
 
 interface GroupData {
     NameGroup: string;
@@ -31,8 +30,15 @@ export const GroupService = () => {
                     navigate('/teachers/groups');
                 }
             } catch (error) {
-                console.error("Ошибка:", error);
-                throw new Error(error.message || 'Произошла ошибка при создании группы.');
+                let errorMessage = '';
+                if (typeof error === 'object' && error !== null && 'message' in error) {
+                    // Приводим тип error к типу Error
+                    const typedError = error as Error;
+                    errorMessage = typedError.message;
+                } else {
+                    errorMessage = 'Произошла неизвестная ошибка при создании группы.';
+                }
+                throw new Error(errorMessage);
             }
         };
 

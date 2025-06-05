@@ -211,12 +211,17 @@ const AddPScheduleForm = () => {
         } catch (error) {
             if (error instanceof Error) {
                 const parsedError = JSON.parse(error.message);
-                SetErrorInServer(parsedError.errormessageserver);
-                SetErrorInServerFirst(parsedError.firsterrormessage);
-                SetErrorInServerSecond(parsedError.hourerrormessage);
-                SetErrorInTeacherTime(parsedError.teacherrormessage);
+                // Выводим наиболее значимую ошибку
+                const primaryError = [
+                    parsedError.firstError,
+                    parsedError.HourError,
+                    parsedError.TeacherError,
+                    parsedError.errorInServer
+                ].find((msg) => msg) || 'Ошибка при обработке запроса.';
+
+                SetErrorInServer(primaryError);
             } else {
-                setError(String(error));
+                SetErrorInServer(String(error));
             }
             
         }
@@ -245,11 +250,11 @@ const AddPScheduleForm = () => {
         } catch (error) {
             if (error instanceof Error) {
                 const parsedError = JSON.parse(error.message);
-                SetSuccessSubBurden(null);
-                SetErrorFirst(parsedError.errormessage1);
-                SetErrorSecond(parsedError.errormessage2);
+                // Выводим наиболее значимую ошибку
+                SetErrorFirst(parsedError.firstmessage);
+                SetErrorSecond(parsedError.secondmessage);
             } else {
-                setError(String(error));
+                SetErrorSecond(String(error));
             }
         }
 

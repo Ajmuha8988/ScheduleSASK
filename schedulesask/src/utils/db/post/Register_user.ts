@@ -8,7 +8,10 @@ interface RegisterData {
     CallNumber: string;
     Role: string;
 }
-
+interface ServerErrors {
+    message?: string;
+    messagecall?: string;
+}
 export const RegisterService = () => {
     const navigate = useNavigate();
     const registerUser = async (registerData: RegisterData) => {
@@ -64,10 +67,11 @@ export const RegisterService = () => {
                 };
             }
         } catch (error) {
-                throw new Error(JSON.stringify({
-                    message: error.message,
-                    messagecall: error.messagecall,
-                }));
+            const serverErrors: ServerErrors = {};
+            if (typeof error === 'object' && error !== null) {
+                Object.assign(serverErrors, error);
+            }
+            throw new Error(JSON.stringify(serverErrors));
         }
     };
 

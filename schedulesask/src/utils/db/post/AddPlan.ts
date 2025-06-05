@@ -1,5 +1,4 @@
-﻿import { useNavigate } from 'react-router-dom';
-interface PlanData {
+﻿interface PlanData {
     ID_Teacher: bigint;
     ID_Lesson: bigint;
     ID_Group: bigint;
@@ -9,7 +8,6 @@ interface PlanData {
 }
 
 export const PlanDataService = () => {
-    const navigate = useNavigate()
     const addPlan = async (planData: PlanData) => {
         try {
             const response = await fetch('http://localhost:8080/administrator/addPlan', {
@@ -29,8 +27,15 @@ export const PlanDataService = () => {
                 throw new Error(data.error);
             }
         } catch (error) {
-            console.error("Ошибка:", error);
-            throw new Error(error.message || 'Произошла ошибка при редактировании учебного плана.');
+            let errorMessage = '';
+            if (typeof error === 'object' && error !== null && 'message' in error) {
+                // Приводим тип error к типу Error
+                const typedError = error as Error;
+                errorMessage = typedError.message;
+            } else {
+                errorMessage = 'Произошла неизвестная ошибка при редактировании учебного плана.';
+            }
+            throw new Error(errorMessage);
         }
     };
     return { addPlan };

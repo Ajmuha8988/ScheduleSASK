@@ -33,9 +33,15 @@ export const MemberService = () => {
                     };
                 }
             } catch (error) {
-                throw {
-                    message: error.message || 'Произошла ошибка при процессе добавлении студента в группу'
-                };
+                let errorMessage = '';
+                if (typeof error === 'object' && error !== null && 'message' in error) {
+                    // Приводим тип error к типу Error
+                    const typedError = error as Error;
+                    errorMessage = typedError.message;
+                } else {
+                    errorMessage = 'Произошла неизвестная ошибка при процессе добавлении студента в группу';
+                }
+                throw new Error(errorMessage);
             }
         };
 

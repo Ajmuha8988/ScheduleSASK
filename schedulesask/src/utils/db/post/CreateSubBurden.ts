@@ -3,7 +3,10 @@
     NumeratorPlan: number;
     DenominatorPlan: number;
 }
-
+interface ServerErrors {
+    firstmessage?: string;
+    secondmessage?: string;
+}
 export const GeneralSubBurdenService = () => {
     const addGeneralSubBurden = async (generalSubBurden: GeneralSubBurden) => {
             try {
@@ -56,15 +59,11 @@ export const GeneralSubBurdenService = () => {
                     return 'Готово!';
                 }
             } catch (error) {
-                if (error instanceof Error) {
-                    throw new Error(JSON.stringify({
-                        errormessage1: error.firstmessage,
-                        errormessage2: error.secondmessage,
-                    }));
+                const serverErrors: ServerErrors = {};
+                if (typeof error === 'object' && error !== null) {
+                    Object.assign(serverErrors, error);
                 }
-                else {
-                    console.log(String(error));
-                }
+                throw new Error(JSON.stringify(serverErrors));
             }
     };
     return { addGeneralSubBurden };

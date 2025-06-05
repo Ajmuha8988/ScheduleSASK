@@ -1,5 +1,4 @@
 ﻿import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 
 interface AuthorizateData {
     Email: string;
@@ -60,9 +59,15 @@ export const AuthorizateService = () => {
                     }
                 
         } catch (error) {
-            throw new Error(
-                error.message
-            );
+            let errorMessage = '';
+            if (typeof error === 'object' && error !== null && 'message' in error) {
+                // Приводим тип error к типу Error
+                const typedError = error as Error;
+                errorMessage = typedError.message;
+            } else {
+                errorMessage = 'Произошла неизвестная ошибка при авторизации пользователя.';
+            }
+            throw new Error(errorMessage);
         }
     };
 
