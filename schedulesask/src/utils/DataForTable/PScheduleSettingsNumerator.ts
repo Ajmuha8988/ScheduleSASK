@@ -1,11 +1,11 @@
 ﻿import { GetAllPartPscheduleNumerator } from '../db/get/getAllPartPSchedulePartNumerator';
 import { GetNamegroup } from '../../utils/db/get/GetNameGroup';
 export const PScheduleNumerator = (numberLesson: number, dayOfWeek: string) => {
-    const { dataNumeratorPschedulePart, loading } = GetAllPartPscheduleNumerator();
+    const { dataNumeratorPschedulePart, loading, errorMessage } = GetAllPartPscheduleNumerator();
     const { dataGroupName } = GetNamegroup();
     const nameGroup = dataGroupName.length > 0 ? dataGroupName[0].NameGroup : null;
-        if (!loading && dataNumeratorPschedulePart !== null) {
-            if (dataNumeratorPschedulePart.message === 'Ошибка при получении данных о расписании') {
+    if (!loading && Array.isArray(dataNumeratorPschedulePart)) {
+            if (errorMessage) {
                 return 'Выходной'
             }
             else {

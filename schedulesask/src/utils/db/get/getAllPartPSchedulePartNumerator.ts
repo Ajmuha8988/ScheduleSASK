@@ -20,6 +20,7 @@ interface PSchedulePart {
 export const GetAllPartPscheduleNumerator = () => {
     const [dataNumeratorPschedulePart, setaNumeratorPschedulePart] = useState<PSchedulePart[]>([]); // Данные о группе
     const [loading, setLoading] = useState(true); // Статус загрузки
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         fetch('http://localhost:8080/administrator/PScheduleNumeratorPart', { credentials: 'include' })
@@ -35,11 +36,12 @@ export const GetAllPartPscheduleNumerator = () => {
             .catch(error => {
                 console.error('Ошибка:', error);
                 setaNumeratorPschedulePart([]); // Очищаем данные в случае ошибки
+                setErrorMessage('Ошибка при получении данных о расписании');
                 setTimeout(() => {
                     setLoading(false); // Даже в случае ошибки ждём секунда
                 }, 1000); // Задержка в миллисекундах (секунда)
             });
     }, []);
 
-    return { dataNumeratorPschedulePart, loading };
+    return { dataNumeratorPschedulePart, loading, errorMessage };
 };

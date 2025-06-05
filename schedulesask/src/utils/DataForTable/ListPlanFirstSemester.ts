@@ -1,10 +1,10 @@
 ﻿import { GetPlan } from '../db/get/GetPlan';
 
 export const ListPlanFirstSemester = () => {
-    const { dataPlan, loadingPlan } = GetPlan();
+    const { dataPlan, loadingPlan, errorMessage } = GetPlan();
 
     if (!loadingPlan && dataPlan !== null) {
-        if (dataPlan.message === 'Ошибка при получении данных.') {
+        if (errorMessage) {
             return { filteredData: [], error: true, loadingFirstPlan: false };
         } else {
             // Шаг 1: Фильтрация данных по первому семестру

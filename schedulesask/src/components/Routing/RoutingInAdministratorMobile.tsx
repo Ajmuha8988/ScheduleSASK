@@ -4,7 +4,7 @@ import AddLessonButton from "../Headers/ModalLessons"
 import { useNavigate } from 'react-router-dom';
 import ModalSettingsBurden from "../Headers/ModalSettingsBurden"
 
-const RoutingInAdministratorsMobile: React.FC<Props> = ({ onRouting }) => {
+const RoutingInAdministratorsMobile  = () => {
     const navigate = useNavigate();
     return (
         <div className="collapse navbar-collapse jcs dropdown" id="navbarNav">

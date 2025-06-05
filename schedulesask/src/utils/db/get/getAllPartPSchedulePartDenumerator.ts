@@ -20,6 +20,7 @@ interface PSchedulePart {
 export const GetAllPartPscheduleDenumerator = () => {
     const [dataDenumeratorPschedulePart, setaDenumeratorPschedulePart] = useState<PSchedulePart[]>([]);  // Данные о группе
     const [DenumeratorLoading, setDenumeratorLoading] = useState(true); // Статус загрузки
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         fetch('http://localhost:8080/administrator/PScheduleDenumeratorPart', { credentials: 'include' })
@@ -35,11 +36,12 @@ export const GetAllPartPscheduleDenumerator = () => {
             .catch(error => {
                 console.error('Ошибка:', error);
                 setaDenumeratorPschedulePart([]); // Очищаем данные в случае ошибки
+                setErrorMessage('Ошибка при получении данных о расписании');
                 setTimeout(() => {
                     setDenumeratorLoading(false); // Даже в случае ошибки ждём секунда
                 }, 1000); // Задержка в миллисекундах (секунда)
             });
     }, []);
 
-    return { dataDenumeratorPschedulePart, DenumeratorLoading };
+    return { dataDenumeratorPschedulePart, DenumeratorLoading, errorMessage };
 };

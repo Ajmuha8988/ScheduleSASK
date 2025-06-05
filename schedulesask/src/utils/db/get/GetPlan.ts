@@ -13,28 +13,34 @@ interface Plan {
 }
 // Кастомный хук для получения данных
 export const GetPlan = () => {
-    const [dataPlan, setPlan] = useState<Plan[]>([]); // Данные о ролях
+    const [dataPlan, setPlan] = useState<Plan[] | null>(null); // Изменили тип, теперь допускаем null
     const [loadingPlan, setLoading] = useState(true); // Статус загрузки
+    const [errorMessage, setErrorMessage] = useState<string | null>(null); // Новое состояние для сообщений об ошибках
 
     useEffect(() => {
         fetch('http://localhost:8080/Plan', { credentials: 'include' })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Ошибка сервера: ${response.statusText}`);
+                }
+                return response.json(); // Преобразуем тело ответа в JSON
+            })
             .then(data => {
                 setPlan(data);
-                // Ждем секунду после успешной загрузки данных,
-                // чтобы показать спиннер дольше, потом снимаем флаг загрузки
+                setErrorMessage(null); // Обнуляем возможное старое сообщение об ошибке
                 setTimeout(() => {
                     setLoading(false);
                 }, 1000); // Задержка в миллисекундах (секунда)
             })
             .catch(error => {
                 console.error('Ошибка:', error);
-                setPlan([]); // Очищаем данные в случае ошибки
+                setPlan([]);
+                setErrorMessage('Ошибка при получении данных.');
                 setTimeout(() => {
-                    setLoading(false); // Даже в случае ошибки ждём секунда
+                    setLoading(false); // Даже в случае ошибки ждем секундочку
                 }, 1000); // Задержка в миллисекундах (секунда)
             });
     }, []);
 
-    return { dataPlan, loadingPlan };
+    return { dataPlan, loadingPlan, errorMessage };
 };
