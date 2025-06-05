@@ -1,9 +1,9 @@
 ﻿import { GetAllPartPscheduleNumerator } from '../db/get/getAllPartPSchedulePartNumerator';
 import { GetNamegroup } from '../../utils/db/get/GetNameGroup';
-export const PScheduleNumerator = (numberLesson, dayOfWeek) => {
+export const PScheduleNumerator = (numberLesson: number, dayOfWeek: string) => {
     const { dataNumeratorPschedulePart, loading } = GetAllPartPscheduleNumerator();
     const { dataGroupName } = GetNamegroup();
-    const nameGroup = dataGroupName.length > 0 ? dataGroupName[0].NameGroup : null && !loading;
+    const nameGroup = dataGroupName.length > 0 ? dataGroupName[0].NameGroup : null;
         if (!loading && dataNumeratorPschedulePart !== null) {
             if (dataNumeratorPschedulePart.message === 'Ошибка при получении данных о расписании') {
                 return 'Выходной'
@@ -27,12 +27,14 @@ export const PScheduleNumerator = (numberLesson, dayOfWeek) => {
                     else {
                         return filteredData.map((item) => ({
                             dataForTable: `${item.Temp_ID_User}\n ${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
-                            NameLessons: `${item.ID_PSchedule}`
+                            NameLessons: `${item.ID_PSchedule}`,
+                            about: ``,
+                            other: ``,
                         }));
                     }
                    
                 } else {
-                    return null; // Или любое другое значение, если записей не нашлось
+                   return 'Нет занятий';
                 }
             }
         } else {

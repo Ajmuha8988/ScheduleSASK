@@ -24,6 +24,14 @@ const getWeekDays = () => {
     return weekDays;
 };
 export default getWeekDays;
+type ColumnType = {
+    id: string;
+    label: string;
+    minWidth?: number;
+    align?: 'center' | 'inherit' | 'left' | 'right' | 'justify';
+    Background?: string;
+    Color?: string;
+};
 
 //export const DateColumns = [
 //    { id: 'Data', label: 'Дата', minWidth: 150, align: 'right', colSpan: 2, Background: '#ffc107', Color: '#fff' },
@@ -35,9 +43,9 @@ export default getWeekDays;
 //    { id: 'DataSaturday', label: getWeekDays()[5], minWidth: 100, Background: '#000', Color: '#fff', align: 'center' },
 //    { id: 'DataSunday', label: getWeekDays()[6], minWidth: 100, Background: '#000', Color: '#fff', align: 'center' },
 //];
-export const WeekColumns = [
+export const WeekColumns: ColumnType[] = [
     { id: 'Number', label: '№', minWidth: 50, align: 'left', Background: '#000', Color: '#fff' },
-    { id: 'Time', label: 'Время', minWidth: 200, align: 'left', Background: '#000', Color: '#fff' },
+    { id: 'Time', label: 'Время', minWidth: 50, align: 'left', Background: '#000', Color: '#fff' },
     { id: 'Monday', label: 'Понедельник', minWidth: 200, Background: '#ffc107', Color: '#fff', align: 'center' },
     { id: 'Tuesday', label: 'Вторник', minWidth: 200, Background: '#ffc107', Color: '#fff', align: 'center' },
     { id: 'Wednesday', label: 'Среда', minWidth: 200, Background: '#ffc107', Color: '#fff', align: 'center' },

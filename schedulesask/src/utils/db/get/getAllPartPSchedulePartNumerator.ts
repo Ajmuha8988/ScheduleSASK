@@ -1,7 +1,24 @@
 ﻿import { useState, useEffect } from 'react';
+interface PSchedulePart {
+    Lastname: string;
+    Firstname: string;
+    Patronymic: string;
+    NameLesson: string;
+    NameGroup: string;
+    NameRoom: string;
+    CallNumber: string;
+    TimeForLesson: number;
+    NumberHourInWeek: number;
+    KindOfSemester: string;
+    NumberLessons: number;
+    DaysOfWeek: string;
+    KindOfSchedules: string;
+    Temp_ID_User: number;
+    ID_PSchedule: number;
+}
 // Кастомный хук для получения данных
 export const GetAllPartPscheduleNumerator = () => {
-    const [dataNumeratorPschedulePart, setaNumeratorPschedulePart] = useState([]); // Данные о группе
+    const [dataNumeratorPschedulePart, setaNumeratorPschedulePart] = useState<PSchedulePart[]>([]); // Данные о группе
     const [loading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {

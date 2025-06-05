@@ -41,30 +41,63 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                 .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
                 .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
                 .query(checkQueryTeachers);
-            
-            if (resultCheckTwo.recordset.length === 2) {
-                res.status(201).json({
+            const ValidateTeachersInRoom = `SELECT ID_user, ID_Room FROM PSchedule WHERE
+                ID_Room = @id_rooms AND ID_Group = (Select ID_Group From Groups Where NameGroup = @id_Groups)
+                AND NumberLessons = @numberLessons AND DaysOfWeek = @daysofweek AND
+                KindOfSchedules = @kindofschedules;`;
+            console.log(body.ID_Room);
+            console.log(body.NameGroup);
+            console.log(body.NumberLesson);
+            console.log(body.DaysOfWeek);
+            console.log(body.KindOfSchedules);
+            const resultValidateTeachersInRoom = await pool.request()
+                .input('id_rooms', sql.BigInt, body.ID_Room)
+                .input('id_Groups', sql.NVarChar, body.NameGroup)
+                .input('numberLessons', sql.Int, body.NumberLesson)
+                .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
+                .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
+                .query(ValidateTeachersInRoom);
+            const ValidateTeachersInDay = `SELECT ID_Group FROM PSchedule WHERE
+                                    ID_user = (Select ID_TrueUser  From TempIDUser Where Temp_ID_User = @id_Teachers) AND
+                                    NumberLessons = @numberLessons AND DaysOfWeek = @daysofweek AND
+                                    KindOfSchedules = @kindofschedules;`;
+
+            const resultValidateTeachersInDay = await pool.request()
+                .input('id_Teachers', sql.BigInt, body.ID_user)
+                .input('numberLessons', sql.Int, body.NumberLesson)
+                .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
+                .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
+                .query(ValidateTeachersInDay);
+            console.log(resultValidateTeachersInRoom.recordset.length);
+            console.log(resultValidateTeachersInDay.recordset.length);
+            if (resultValidateTeachersInRoom.recordset.length > 0 && resultValidateTeachersInDay.recordset.length > 0) {
+                res.status(401).json({
                     errormessageteacher: 'Вы больше не можете добавлять совмещённые пары, ибо их колличество превышает допустимого!'
                 });
             } else {
-                const checkQueryTwoTeachers = `SELECT ID_PSchedule FROM PSchedule WHERE
+                if (resultCheckTwo.recordset.length === 2) {
+                    res.status(201).json({
+                        errormessageteacher: 'Вы больше не можете добавлять совмещённые пары, ибо их колличество превышает допустимого!'
+                    });
+                } else {
+                    const checkQueryTwoTeachers = `SELECT ID_PSchedule FROM PSchedule WHERE
                 ID_Group = (Select ID_Group From Groups Where NameGroup = @id_Groups) AND
                 ID_user = (Select ID_TrueUser From TempIDUser Where Temp_ID_User = @id_Teachers) AND
                 NumberLessons = @numberLessons AND DaysOfWeek = @daysofweek AND
                 KindOfSchedules = @kindofschedules;`;
 
-                const resultCheckTwoTeachers = await pool.request()
-                    .input('id_Groups', sql.NVarChar, body.NameGroup)
-                    .input('id_Teachers', sql.BigInt, body.ID_user)
-                    .input('numberLessons', sql.Int, body.NumberLesson)
-                    .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
-                    .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
-                    .query(checkQueryTwoTeachers);
-                if (resultCheckTwoTeachers.recordset.length > 0) {
-                    res.status(201).json({
-                        errormessagefirst: 'Невозможно внести изменение в расписание, так как у преподавателя уже стоит пара в этой группе!'
-                    });
-                } else {
+                    const resultCheckTwoTeachers = await pool.request()
+                        .input('id_Groups', sql.NVarChar, body.NameGroup)
+                        .input('id_Teachers', sql.BigInt, body.ID_user)
+                        .input('numberLessons', sql.Int, body.NumberLesson)
+                        .input('daysofweek', sql.NVarChar, body.DaysOfWeek)
+                        .input('kindofschedules', sql.NVarChar, body.KindOfSchedules)
+                        .query(checkQueryTwoTeachers);
+                    if (resultCheckTwoTeachers.recordset.length > 0) {
+                        res.status(201).json({
+                            errormessagefirst: 'Невозможно внести изменение в расписание, так как у преподавателя уже стоит пара в этой группе!'
+                        });
+                    } else {
                         if (resultCheckTeachers.recordset.length > 1) {
                             res.status(201).json({
                                 errormessageteacher: 'Вы больше не можете добавлять совмещённые пары, ибо их колличество превышает допустимого!'
@@ -211,7 +244,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                                     });
                                                 }
                                             }
-                                            
+
                                         }
                                     }
                                 }
@@ -265,13 +298,14 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                             message: 'Успешно внесено совмещённая пара в расписании!'
                                         });
                                     }
-                                    
+
                                 }
-                            }                            
-                        
+                            }
+
+                        }
                     }
+
                 }
-                
             }
         } else {
             const checkQueryRoom = `SELECT ID_PSchedule FROM PSchedule WHERE 

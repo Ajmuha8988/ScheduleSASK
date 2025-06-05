@@ -8,7 +8,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { WeekColumns } from '../../utils/Date/DateSettings';
@@ -17,7 +16,7 @@ import { PScheduleDenumerator } from '../../utils/DataForTable/PScheduleSettings
 import { GetNamegroup } from '../../utils/db/get/GetNameGroup';
 import { calculateSemester } from '../../utils/Date/CalculateSemester';
 import CircularProgress from '@mui/material/CircularProgress';
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import PopupState, {bindMenu } from 'material-ui-popup-state';
 import { DeletePScheduleService } from '../../utils/db/delete/deletePSchedule';
 
 const tableStyles = {
@@ -25,27 +24,44 @@ const tableStyles = {
     fontSize: '1rem',
     fontWeight: 'normal',
 };
+interface MousePosition {
+    x: number | null;
+    y: number | null;
+}
+type LessonObject = {
+    dataForTable: string;
+    NameLessons?: string;
+    about?: string;
+    other?: string;
+};
+type LessonArrayOrSingle =
+    | LessonObject[]
+    | LessonObject
+    | string
+    | null
+    | boolean;
 interface Data {
     Number: number;
     Time: string;
-    Monday: string;
-    Tuesday: string;
-    Wednesday: string;
-    Thursday: string;
-    Friday: string;
-    Saturday: string;
-    Sunday: string;
+    Monday: LessonArrayOrSingle;
+    Tuesday: LessonArrayOrSingle;
+    Wednesday: LessonArrayOrSingle;
+    Thursday: LessonArrayOrSingle;
+    Friday: LessonArrayOrSingle;
+    Saturday: LessonArrayOrSingle;
+    Sunday: LessonArrayOrSingle;
+    [key: string]: unknown; // добавляем индексную сигнатуру
 }
 function createData(
     Number: number,
     Time: string,
-    Monday: string,
-    Tuesday: string,
-    Wednesday: string,
-    Thursday: string,
-    Friday: string,
-    Saturday: string,
-    Sunday: string,
+    Monday: LessonArrayOrSingle,
+    Tuesday: LessonArrayOrSingle,
+    Wednesday: LessonArrayOrSingle,
+    Thursday: LessonArrayOrSingle,
+    Friday: LessonArrayOrSingle,
+    Saturday: LessonArrayOrSingle,
+    Sunday: LessonArrayOrSingle,
 ): Data {
     return { Number, Time, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday };
 }
@@ -112,30 +128,35 @@ export default function TableForPSchedules() {
           ];
     }
     const { deletePScheduleMember } = DeletePScheduleService()
-    const deletePScheduleSubmit = async (nameLesson) => {
-        event.preventDefault();
+    const deletePScheduleSubmit = async (nameLesson: bigint) => {
+        if (event) {
+            event.preventDefault();
+        }
         try {
             await deletePScheduleMember({
                 ID_PSchedule: nameLesson
             });
             setTimeout(() => window.location.reload(), 1000);
         } catch (error) {
-            alert(error.message);
+            if (error instanceof Error) {
+                alert(error.message);
+            } else {
+                console.log(String(error))
+            } 
         }
 
     };
     const nameGroup = dataGroupName.length > 0 ? dataGroupName[0].NameGroup : null;
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [menuAnchorPosition, setMenuAnchorPosition] = React.useState<AnchorPosition | null>(null);
-    const [mousePosition, setMousePosition] = React.useState({ x: undefined, y: undefined });
-    const handleClick = (event) => {
+    const [mousePosition, setMousePosition] = React.useState<MousePosition>({
+        x: null,
+        y: null
+    });
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLParagraphElement>) => {
         setMousePosition({
             x: event.clientX,
             y: event.clientY
         });
     };
-    const [isHovered, setIsHovered] = React.useState(false);
     return (
         <>
            
@@ -176,31 +197,37 @@ export default function TableForPSchedules() {
                                     </TableHead>
                                     <TableBody>
                                         {rowsNumerator
-                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((row, index) => {
+                                            .map(row => {
                                                 return (
-                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                    <TableRow hover role="checkbox" tabIndex={-1}>
                                                         {WeekColumns.map((column, cellIndex) => {
                                                             const value = row[column.id];
                                                             let displayedValue;
                                                             let displayedValueSecond;
                                                             let displayedTwoValue;
                                                             let displayedValueThird;
-                                                            if (typeof value === 'object') {
-                                                                displayedValue = value?.length > 0 ? value[0].dataForTable : '';
-                                                                displayedTwoValue = value?.length > 1 ? value[0].dataForTable : '';
-                                                                displayedValueSecond = value?.length > 1 ? value[1].dataForTable : '';
-                                                                displayedValueThird = value?.length > 0 ? value[0].about : '';
+                                                            let displayedValueForDelete;
+                                                            let displayedTwoValueForDelete;
+                                                            let displayedOtherValueForDelete;
+                                                            if (Array.isArray(value)) {
+                                                                displayedValue = value.length > 0 ? value[0].dataForTable : '';
+                                                                displayedTwoValue = value.length > 1 ? value[1].dataForTable : '';
+                                                                displayedValueSecond = value.length > 1 ? value[1].dataForTable : '';
+                                                                displayedTwoValueForDelete = value.length > 1 ? value[1].NameLessons : '';
+                                                                displayedValueForDelete = value.length > 0 ? value[0].NameLessons : '';
+                                                                displayedOtherValueForDelete = value.length > 0 ? value[0].other : '';
+                                                                displayedValueThird = value.length > 0 ? value[0].about : '';
                                                             } else {
-                                                                displayedValue = value; // Для чисел и строк оставляем как есть
+                                                                displayedValue = value as any; // Если это не массив, оставляем как есть
                                                                 displayedTwoValue = null;
+                                                                displayedOtherValueForDelete = null;
                                                                 displayedValueSecond = null;
                                                                 displayedValueThird = null;
+                                                                displayedValueForDelete = null;
+                                                                displayedTwoValueForDelete = null;
                                                             }
                                                             return (
                                                                 <TableCell
-                                                                    onMouseEnter={() => setIsHovered(true)}
-                                                                    onMouseLeave={() => setIsHovered(false)}
                                                                     className='table-cell-break' key={column.id} align={column.align} style={{
                                                                     backgroundColor: cellIndex === 1 ? '#ffc107' : (cellIndex === 0 ? '#000' : undefined),
                                                                     color: cellIndex < 2 ? '#fff' : undefined,
@@ -217,7 +244,7 @@ export default function TableForPSchedules() {
 
                                                                         <div className={
                                                                             // Изменяем класс в зависимости от условия
-                                                                            `${value?.length === 2 ? 'block' : 'none'}`}>
+                                                                            `${Array.isArray(value) && value.length === 2 ? 'block' : 'none'}`}>
                                                                             <PopupState variant="popover" popupId="demo-popup-menu">
                                                                                 {(popupState) => (
                                                                                     <React.Fragment>
@@ -227,20 +254,21 @@ export default function TableForPSchedules() {
                                                                                                     <div style={{ display: 'flex', justifyContent: 'end', }}>
                                                                                                         <IconButton style={{
                                                                                                             marginLeft: 'auto',
-                                                                                                            display: cellIndex > 1 && cellIndex < 7 && (displayedValue === null || displayedValue !== '') && value?.length === 2 ? 'block' : 'none',
+                                                                                                            display: cellIndex > 1 && cellIndex < 7 && (displayedValue === null || displayedValue !== '') && Array.isArray(value) && value.length === 2 ? 'block' : 'none',
                                                                                                             position: 'relative', top: '-15px', left: '15px'
-                                                                                                        }} onClick={(event) => {
-                                                                                                            handleClick(event);
+                                                                                                        }} onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                                                                                                            handleClick(event); // Передаем событие в handleClick
                                                                                                             popupStateForTwo.open(event.currentTarget);
-                                                                                                        }}>
+                                                                                                        }}
+                                                                                                        >
                                                                                                             <InfoOutlineIcon style={{
-                                                                                                                display: cellIndex > 1 && cellIndex < 7 && (displayedValue === null || displayedValue !== '') && value?.length === 2 ? 'block' : 'none',
+                                                                                                                display: cellIndex > 1 && cellIndex < 7 && (displayedValue === null || displayedValue !== '') && Array.isArray(value) && value.length === 2 ? 'block' : 'none',
                                                                                                             }}></InfoOutlineIcon>
                                                                                                         </IconButton>
                                                                                                         <Menu  {...bindMenu(popupStateForTwo)}
                                                                                                             anchorReference="anchorPosition"
                                                                                                             anchorPosition={{
-                                                                                                                top: mousePosition.y, left: mousePosition.x
+                                                                                                                top: mousePosition.y ?? 0, left: mousePosition.x ?? 0
                                                                                                             }}>
                                                                                                             <TableCell className='table-cell-break' sx={{
                                                                                                                 fontFamily: "'Vollda'",
@@ -249,7 +277,7 @@ export default function TableForPSchedules() {
                                                                                                             }} key={column.id} align={column.align}>
                                                                                                                 <p>{displayedValueSecond}</p>
                                                                                                             </TableCell>
-                                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(value[1].NameLessons)} sx={{
+                                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(displayedTwoValueForDelete)} sx={{
                                                                                                                 fontFamily: "'Vollda'"
                                                                                                             }}>Удалить</MenuItem>
                                                                                                         </Menu>
@@ -259,7 +287,7 @@ export default function TableForPSchedules() {
                                                                                         </PopupState>
                                                                                         <p style={{
                                                                                             display: cellIndex > 1 && cellIndex < 7 ? 'block' : 'none', position: 'relative', top: '-20px',
-                                                                                        }} variant="contained" onClick={(event) => {
+                                                                                        }} onClick={(event: React.MouseEvent<HTMLParagraphElement>) => {
                                                                                             handleClick(event);
                                                                                             popupState.open(event.currentTarget);
                                                                                         }}>
@@ -268,9 +296,9 @@ export default function TableForPSchedules() {
                                                                                         <Menu  {...bindMenu(popupState)}
                                                                                             anchorReference="anchorPosition"
                                                                                             anchorPosition={{
-                                                                                                top: mousePosition.y, left: mousePosition.x
+                                                                                                top: mousePosition.y ?? 0, left: mousePosition.x ?? 0
                                                                                             }}>
-                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(value[0].NameLessons)} sx={{
+                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(displayedValueForDelete)} sx={{
                                                                                                 fontFamily: "'Vollda'"
                                                                                             }}>Удалить</MenuItem>
                                                                                         </Menu>
@@ -285,7 +313,7 @@ export default function TableForPSchedules() {
                                                                                     <React.Fragment>
                                                                                             <p style={{
                                                                                                     display: cellIndex > 1 && cellIndex < 7 ? 'block' : 'none',
-                                                                                                }} variant="contained" onClick={(event) => {
+                                                                                                }} onClick={(event) => {
                                                                                                     handleClick(event);
                                                                                                     popupState.open(event.currentTarget);
                                                                                                 }}>
@@ -295,9 +323,9 @@ export default function TableForPSchedules() {
                                                                                         <Menu  {...bindMenu(popupState)}
                                                                                             anchorReference="anchorPosition"
                                                                                             anchorPosition={{
-                                                                                                top: mousePosition.y, left: mousePosition.x
+                                                                                                top: mousePosition.y ?? 0, left: mousePosition.x ?? 0
                                                                                             }}>
-                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(value[0].NameLessons)} sx={{
+                                                                                                <MenuItem onClick={() => deletePScheduleSubmit(displayedValueForDelete)} sx={{
                                                                                                 fontFamily: "'Vollda'"
                                                                                             }}>Удалить</MenuItem>
                                                                                         </Menu>
@@ -325,7 +353,7 @@ export default function TableForPSchedules() {
                                                                                                         <Menu  {...bindMenu(popupStateForTwo)}
                                                                                                             anchorReference="anchorPosition"
                                                                                                             anchorPosition={{
-                                                                                                                top: mousePosition.y, left: mousePosition.x
+                                                                                                                top: mousePosition.y ?? 0, left: mousePosition.x ?? 0
                                                                                                             }}>
                                                                                                             <TableCell className='table-cell-break' sx={{
                                                                                                                 fontFamily: "'Vollda'",
@@ -334,7 +362,7 @@ export default function TableForPSchedules() {
                                                                                                             }} key={column.id} align={column.align}>
                                                                                                                 <p>{displayedValueThird}</p>
                                                                                                             </TableCell>
-                                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(value[0].other)} sx={{
+                                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(displayedOtherValueForDelete)} sx={{
                                                                                                                 fontFamily: "'Vollda'"
                                                                                                             }}>Удалить</MenuItem>
                                                                                                         </Menu>
@@ -344,7 +372,7 @@ export default function TableForPSchedules() {
                                                                                         </PopupState>
                                                                                         <p style={{
                                                                                             display: cellIndex > 1 && cellIndex < 7 ? 'block' : 'none', position: 'relative', top: '-20px',
-                                                                                        }} variant="contained" onClick={(event) => {
+                                                                                        }} onClick={(event) => {
                                                                                             handleClick(event);
                                                                                             popupState.open(event.currentTarget);
                                                                                         }}>
@@ -353,9 +381,9 @@ export default function TableForPSchedules() {
                                                                                         <Menu  {...bindMenu(popupState)}
                                                                                             anchorReference="anchorPosition"
                                                                                             anchorPosition={{
-                                                                                                top: mousePosition.y, left: mousePosition.x
-                                                                                            }}>
-                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(value[0].NameLessons)} sx={{
+                                                                                                top: mousePosition.y ?? 0, left: mousePosition.x ?? 0
+                                                                                                }}>
+                                                                                                <MenuItem onClick={() => deletePScheduleSubmit(displayedValueForDelete)} sx={{
                                                                                                 fontFamily: "'Vollda'"
                                                                                             }}>Удалить</MenuItem>
                                                                                         </Menu>
@@ -403,31 +431,37 @@ export default function TableForPSchedules() {
                                     </TableHead>
                                     <TableBody>
                                         {rowsDenumerator
-                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((row, index) => {
+                                            .map(row => {
                                                 return (
-                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                    <TableRow hover role="checkbox" tabIndex={-1}>
                                                         {WeekColumns.map((column, cellIndex) => {
                                                             const value = row[column.id];
                                                             let displayedValue;
                                                             let displayedValueSecond;
                                                             let displayedTwoValue;
                                                             let displayedValueThird;
-                                                            if (typeof value === 'object') {
-                                                                displayedValue = value?.length > 0 ? value[0].dataForTable : '';
-                                                                displayedTwoValue = value?.length > 1 ? value[0].dataForTable : '';
-                                                                displayedValueSecond = value?.length > 1 ? value[1].dataForTable : '';
-                                                                displayedValueThird = value?.length > 0 ? value[0].about : '';
+                                                            let displayedValueForDelete;
+                                                            let displayedTwoValueForDelete;
+                                                            let displayedOtherValueForDelete;
+                                                            if (Array.isArray(value)) {
+                                                                displayedValue = value.length > 0 ? value[0].dataForTable : '';
+                                                                displayedTwoValue = value.length > 1 ? value[1].dataForTable : '';
+                                                                displayedValueSecond = value.length > 1 ? value[1].dataForTable : '';
+                                                                displayedTwoValueForDelete = value.length > 1 ? value[1].NameLessons : '';
+                                                                displayedValueForDelete = value.length > 0 ? value[0].NameLessons : '';
+                                                                displayedOtherValueForDelete = value.length > 0 ? value[0].other : '';
+                                                                displayedValueThird = value.length > 0 ? value[0].about : '';
                                                             } else {
-                                                                displayedValue = value; // Для чисел и строк оставляем как есть
+                                                                displayedValue = value as any; // Если это не массив, оставляем как есть
                                                                 displayedTwoValue = null;
+                                                                displayedOtherValueForDelete = null;
                                                                 displayedValueSecond = null;
                                                                 displayedValueThird = null;
+                                                                displayedValueForDelete = null;
+                                                                displayedTwoValueForDelete = null;
                                                             }
                                                             return (
                                                                 <TableCell
-                                                                    onMouseEnter={() => setIsHovered(true)}
-                                                                    onMouseLeave={() => setIsHovered(false)}
                                                                     className='table-cell-break' key={column.id} align={column.align} style={{
                                                                         backgroundColor: cellIndex === 1 ? '#ffc107' : (cellIndex === 0 ? '#000' : undefined),
                                                                         color: cellIndex < 2 ? '#fff' : undefined,
@@ -444,7 +478,7 @@ export default function TableForPSchedules() {
 
                                                                         <div className={
                                                                             // Изменяем класс в зависимости от условия
-                                                                            `${value?.length === 2 ? 'block' : 'none'}`}>
+                                                                            `${Array.isArray(value) && value.length === 2 ? 'block' : 'none'}`}>
                                                                             <PopupState variant="popover" popupId="demo-popup-menu">
                                                                                 {(popupState) => (
                                                                                     <React.Fragment>
@@ -454,20 +488,20 @@ export default function TableForPSchedules() {
                                                                                                     <div style={{ display: 'flex', justifyContent: 'end', }}>
                                                                                                         <IconButton style={{
                                                                                                             marginLeft: 'auto',
-                                                                                                            display: cellIndex > 1 && cellIndex < 7 && (displayedValue === null || displayedValue !== '') && value?.length === 2 ? 'block' : 'none',
+                                                                                                            display: cellIndex > 1 && cellIndex < 7 && (displayedValue === null || displayedValue !== '') && Array.isArray(value) && value.length === 2 ? 'block' : 'none',
                                                                                                             position: 'relative', top: '-15px', left: '15px'
                                                                                                         }} onClick={(event) => {
                                                                                                             handleClick(event);
                                                                                                             popupStateForTwo.open(event.currentTarget);
                                                                                                         }}>
                                                                                                             <InfoOutlineIcon style={{
-                                                                                                                display: cellIndex > 1 && cellIndex < 7 && (displayedValue === null || displayedValue !== '') && value?.length === 2 ? 'block' : 'none',
+                                                                                                                display: cellIndex > 1 && cellIndex < 7 && (displayedValue === null || displayedValue !== '') && Array.isArray(value) && value.length === 2 ? 'block' : 'none',
                                                                                                             }}></InfoOutlineIcon>
                                                                                                         </IconButton>
                                                                                                         <Menu  {...bindMenu(popupStateForTwo)}
                                                                                                             anchorReference="anchorPosition"
                                                                                                             anchorPosition={{
-                                                                                                                top: mousePosition.y, left: mousePosition.x
+                                                                                                                top: mousePosition.y ?? 0, left: mousePosition.x ?? 0
                                                                                                             }}>
                                                                                                             <TableCell className='table-cell-break' sx={{
                                                                                                                 fontFamily: "'Vollda'",
@@ -476,7 +510,7 @@ export default function TableForPSchedules() {
                                                                                                             }} key={column.id} align={column.align}>
                                                                                                                 <p>{displayedValueSecond}</p>
                                                                                                             </TableCell>
-                                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(value[1].NameLessons)} sx={{
+                                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(displayedTwoValueForDelete)} sx={{
                                                                                                                 fontFamily: "'Vollda'"
                                                                                                             }}>Удалить</MenuItem>
                                                                                                         </Menu>
@@ -486,7 +520,7 @@ export default function TableForPSchedules() {
                                                                                         </PopupState>
                                                                                         <p style={{
                                                                                             display: cellIndex > 1 && cellIndex < 7 ? 'block' : 'none', position: 'relative', top: '-20px',
-                                                                                        }} variant="contained" onClick={(event) => {
+                                                                                        }} onClick={(event) => {
                                                                                             handleClick(event);
                                                                                             popupState.open(event.currentTarget);
                                                                                         }}>
@@ -495,9 +529,9 @@ export default function TableForPSchedules() {
                                                                                         <Menu  {...bindMenu(popupState)}
                                                                                             anchorReference="anchorPosition"
                                                                                             anchorPosition={{
-                                                                                                top: mousePosition.y, left: mousePosition.x
+                                                                                                top: mousePosition.y ?? 0, left: mousePosition.x ?? 0
                                                                                             }}>
-                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(value[0].NameLessons)} sx={{
+                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(displayedValueForDelete)} sx={{
                                                                                                 fontFamily: "'Vollda'"
                                                                                             }}>Удалить</MenuItem>
                                                                                         </Menu>
@@ -512,7 +546,7 @@ export default function TableForPSchedules() {
                                                                                     <React.Fragment>
                                                                                         <p style={{
                                                                                             display: cellIndex > 1 && cellIndex < 7 ? 'block' : 'none',
-                                                                                        }} variant="contained" onClick={(event) => {
+                                                                                        }} onClick={(event) => {
                                                                                             handleClick(event);
                                                                                             popupState.open(event.currentTarget);
                                                                                         }}>
@@ -522,9 +556,9 @@ export default function TableForPSchedules() {
                                                                                         <Menu  {...bindMenu(popupState)}
                                                                                             anchorReference="anchorPosition"
                                                                                             anchorPosition={{
-                                                                                                top: mousePosition.y, left: mousePosition.x
+                                                                                                top: mousePosition.y ?? 0, left: mousePosition.x ?? 0
                                                                                             }}>
-                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(value[0].NameLessons)} sx={{
+                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(displayedValueForDelete)} sx={{
                                                                                                 fontFamily: "'Vollda'"
                                                                                             }}>Удалить</MenuItem>
                                                                                         </Menu>
@@ -552,7 +586,7 @@ export default function TableForPSchedules() {
                                                                                                         <Menu  {...bindMenu(popupStateForTwo)}
                                                                                                             anchorReference="anchorPosition"
                                                                                                             anchorPosition={{
-                                                                                                                top: mousePosition.y, left: mousePosition.x
+                                                                                                                top: mousePosition.y ?? 0, left: mousePosition.x ?? 0
                                                                                                             }}>
                                                                                                             <TableCell className='table-cell-break' sx={{
                                                                                                                 fontFamily: "'Vollda'",
@@ -560,8 +594,8 @@ export default function TableForPSchedules() {
                                                                                                                 fontWeight: 'normal',
                                                                                                             }} key={column.id} align={column.align}>
                                                                                                                 <p>{displayedValueThird}</p>
-                                                                                                            </TableCell>
-                                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(value[0].other)} sx={{
+                                                                                                                </TableCell>
+                                                                                                                <MenuItem onClick={() => deletePScheduleSubmit(displayedOtherValueForDelete)} sx={{
                                                                                                                 fontFamily: "'Vollda'"
                                                                                                             }}>Удалить</MenuItem>
                                                                                                         </Menu>
@@ -571,7 +605,7 @@ export default function TableForPSchedules() {
                                                                                         </PopupState>
                                                                                         <p style={{
                                                                                             display: cellIndex > 1 && cellIndex < 7 ? 'block' : 'none', position: 'relative', top: '-20px',
-                                                                                        }} variant="contained" onClick={(event) => {
+                                                                                        }}  onClick={(event) => {
                                                                                             handleClick(event);
                                                                                             popupState.open(event.currentTarget);
                                                                                         }}>
@@ -580,9 +614,9 @@ export default function TableForPSchedules() {
                                                                                         <Menu  {...bindMenu(popupState)}
                                                                                             anchorReference="anchorPosition"
                                                                                             anchorPosition={{
-                                                                                                top: mousePosition.y, left: mousePosition.x
-                                                                                            }}>
-                                                                                            <MenuItem onClick={() => deletePScheduleSubmit(value[0].NameLessons)} sx={{
+                                                                                                top: mousePosition.y ?? 0, left: mousePosition.x ?? 0
+                                                                                                }}>
+                                                                                                <MenuItem onClick={() => deletePScheduleSubmit(displayedValueForDelete)} sx={{
                                                                                                 fontFamily: "'Vollda'"
                                                                                             }}>Удалить</MenuItem>
                                                                                         </Menu>

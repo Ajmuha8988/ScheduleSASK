@@ -27,12 +27,14 @@ export const PScheduleDenumerator = (numberLesson, dayOfWeek) => {
                     else {
                         return filteredData.map((item) => ({
                             dataForTable: `${item.Temp_ID_User}\n ${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
-                            NameLessons: `${item.ID_PSchedule}`
+                            NameLessons: `${item.ID_PSchedule}`,
+                            about: ``,
+                            other: ``,
                         }));
                     }
 
                 } else {
-                    return null; // Или любое другое значение, если записей не нашлось
+                    return 'Нет занятий';
                 }
             }
         } else {
