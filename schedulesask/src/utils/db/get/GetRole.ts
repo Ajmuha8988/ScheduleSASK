@@ -1,8 +1,10 @@
 ﻿import { useState, useEffect } from 'react';
-
+interface Role {
+    Role: string
+}
 // Кастомный хук для получения данных
 export const GetRoleID = () => {
-    const [dataRole, setDataRole] = useState([]); // Данные о ролях
+    const [dataRole, setDataRole] = useState<Role[]>([]); // Данные о ролях
     const [loading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {
