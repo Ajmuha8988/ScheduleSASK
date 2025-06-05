@@ -60,9 +60,9 @@ export const AuthorizateService = () => {
                     }
                 
         } catch (error) {
-            throw {
-                message: error.message || 'Произошла ошибка при авторизации'
-            };
+            throw new Error(
+                error.message
+            );
         }
     };
 

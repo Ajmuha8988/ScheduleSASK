@@ -10,7 +10,7 @@ import * as React from 'react';
 
 const theme = createTheme({
     palette: {
-        customColor: {
+        warning: {
             main: '#ffc107', // Замените на нужный вам цвет
         },
     },
@@ -38,8 +38,13 @@ const AddLessonButton = () => {
                 SetSuccess(successfullLesson);
             }
         } catch (error) {
-            SetErrorLesson(error.message);
-            SetSuccess(null);
+            if (error instanceof Error) {
+                SetErrorLesson(error.message);
+                SetSuccess(null);
+            } else {
+                SetErrorLesson(String(error));
+                SetSuccess(null);
+            } 
         }
     };
     return (
@@ -67,7 +72,7 @@ const AddLessonButton = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Учебный предмет"
                                     id="Lesson" value={Lesson} onChange={(e) => setLesson(e.target.value)}
                                     variant="outlined"

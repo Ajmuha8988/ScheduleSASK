@@ -9,7 +9,7 @@ import * as React from 'react';
 
 const theme = createTheme({
     palette: {
-        customColor: {
+        warning: {
             main: '#ffc107', // Замените на нужный вам цвет
         },
     },
@@ -36,8 +36,13 @@ const AddRoomButton = () => {
                 SetSuccess(successfullRoom);
             }
         } catch (error) {
-            SetErrorRoom(error.message);
-            SetSuccess(null);
+            if (error instanceof Error) {
+                SetErrorRoom(error.message);
+                SetSuccess(null);
+            } else {
+                SetErrorRoom(String(error));
+                SetSuccess(null);
+            } 
         }
     };
     return (
@@ -65,7 +70,7 @@ const AddRoomButton = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Кабинет"
                                     id="Room" value={Room} onChange={(e) => setRoom(e.target.value)}
                                     variant="outlined"

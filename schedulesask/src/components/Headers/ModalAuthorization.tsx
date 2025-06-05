@@ -9,7 +9,7 @@ import { AuthorizateService } from '../../utils/db/post/Authorization_user';
 
 const theme = createTheme({
     palette: {
-        customColor: {
+        warning: {
             main: '#ffc107', // Замените на нужный вам цвет
         },
     },
@@ -17,20 +17,26 @@ const theme = createTheme({
 
 const AuthorizateButton = () => {
     const [errorAuthorization, SetErrorAuthorization] = useState<string | null>(null);
-    const [Email, setEmail] = useState<{ Email: string } | null>();
+    const [Email, setEmail] = useState<string | ''>('');
     const [Password, setPassword] = useState('');
     const { authorizateUser } = AuthorizateService();
-    const [errorEmail, setErrorEmail] = useState<string | null>(null);
     const [showAuthorization, setAuthorizationShow] = useState(false);
     const AuthorizateSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!Email) {
+            console.log('Произошла непредвиденная ошибка!');
+        }
         try {
             await authorizateUser({
                 Email: Email,
                 Password: Password
             });
         } catch (error) {
-            SetErrorAuthorization(error.message);
+            if (error instanceof Error) {
+                SetErrorAuthorization(error.message);
+            } else {
+                SetErrorAuthorization(String(error));
+            } 
         }
 
     };
@@ -61,7 +67,7 @@ const AuthorizateButton = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Почта"
                                     type="email" id="Email" value={Email} onChange={(e) => setEmail(e.target.value)}
                                     variant="outlined"
@@ -69,7 +75,6 @@ const AuthorizateButton = () => {
                                     size='small'
                                     required
                                 />
-                                {errorEmail && <p style={{ color: 'red' }}>{errorEmail}</p>}
                             </div>
                         </ThemeProvider>
                         <div className="mb-3">
@@ -89,7 +94,7 @@ const AuthorizateButton = () => {
                                                 color: '#616161',
                                             },
                                         }}
-                                        color='customColor' // Используем созданный нами цвет
+                                        color='warning' // Используем созданный нами цвет
                                         label="Пароль"
                                         type="password" value={Password} onChange={(e) => setPassword(e.target.value)}
                                         variant="outlined"

@@ -12,13 +12,17 @@ import { GetAllTeacher } from '../../utils/db/get/GetAllTeacher';
 
 const theme = createTheme({
     palette: {
-        customColor: {
+        warning: {
             main: '#ffc107', // Замените на нужный вам цвет
         },
     },
 
     
 });
+interface OptionType {
+    label: string;
+    value: bigint;
+}
 const StyledAutocomplete = styled(Autocomplete)({
     "& .MuiFormLabel-root.Mui-focused": {
         fontFamily: 'Vollda',
@@ -67,25 +71,38 @@ const ModalSettingsBurden = () => {
     const [showAddBurden, SetAddBurden] = useState(false);
     const CreateGeneralBurden = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        try {
-            const successfullGeneralBurden = await addGeneralBurden({
-                ID_Teacher: ID_Teachers,
-                FirstSemester: FirstSemesters,
-                SecondSemester: SecondSemesters
-            });
-            if (location.pathname === '/administrator') {
-                SetErrorTime(null);
-                SetSuccess(successfullGeneralBurden)
-            } else {
-                setTimeout(() => window.location.reload(), 1000);
-                SetErrorTime(null);
-                SetSuccess(successfullGeneralBurden)
-            }
-
-        } catch (error) {
-            SetErrorTime(error.message);
-            SetSuccess(null)
+        if (!ID_Teachers || !FirstSemesters || !SecondSemesters) {
+            SetErrorTime('Произошла непредвиденная ошибка');
+            return
         }
+        else {
+            try {
+                const successfullGeneralBurden = await addGeneralBurden({
+                    ID_Teacher: ID_Teachers,
+                    FirstSemester: FirstSemesters,
+                    SecondSemester: FirstSemesters
+                });
+                if (location.pathname === '/administrator') {
+                    SetErrorTime(null);
+                    SetSuccess(successfullGeneralBurden)
+                } else {
+                    setTimeout(() => window.location.reload(), 1000);
+                    SetErrorTime(null);
+                    SetSuccess(successfullGeneralBurden)
+                }
+
+            } catch (error) {
+                if (error instanceof Error) {
+                    SetErrorTime(error.message);
+                    SetSuccess(null)
+                } else {
+
+                    SetErrorTime(String(error));
+                    SetSuccess(null)
+                }
+            }
+        }
+        
     };
     return (
         <>
@@ -101,19 +118,17 @@ const ModalSettingsBurden = () => {
                             id="combo-box-demo"
                             options={optionsTeacher}
                             noOptionsText={"Нет преподавателей"}
-                            getOptionLabel={(option) => option.label}
+                            getOptionLabel={(option) => typeof option === 'object' && option !== null
+                                ? (option as OptionType).label
+                                : ''}
                             renderInput={(params) => <TextField
                                 required
-                                InputLabelProps={{
-                                    style: {
-                                        fontFamily: 'Vollda',
-                                    }
-                                }}
                                 {...params}
                                 size='small'
                                 label="Преподаватель" />}
-                            onChange={(event, newValue) => {
-                                setID_Teacher(newValue?.value);
+                            onChange={(_, newValue ) => {
+                                const typedNewValue = newValue as OptionType;
+                                setID_Teacher(typedNewValue.value);
                             }}
                         />
                         <ThemeProvider theme={theme} >
@@ -132,9 +147,9 @@ const ModalSettingsBurden = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Нагрузка на 1-ый семестр (в часах)"
-                                    id="FirstSemester" value={FirstSemesters} onChange={(e) => setFirstSemester(e.target.value)}
+                                    id="FirstSemester" value={FirstSemesters} onChange={(e) => setFirstSemester(Number(e.target.value))}
                                     variant="outlined"
                                     type='number'
                                     className='form-control'
@@ -159,9 +174,9 @@ const ModalSettingsBurden = () => {
                                             color: '#616161',
                                         },
                                     }}
-                                    color='customColor' // Используем созданный нами цвет
+                                    color='warning' // Используем созданный нами цвет
                                     label="Нагрузка на 2-ой семестр (в часах)"
-                                    id="SecondSemester" value={SecondSemesters} onChange={(e) => setSecondSemester(e.target.value)}
+                                    id="SecondSemester" value={SecondSemesters} onChange={(e) => setSecondSemester(Number(e.target.value))}
                                     variant="outlined"
                                     type='number'
                                     className='form-control'

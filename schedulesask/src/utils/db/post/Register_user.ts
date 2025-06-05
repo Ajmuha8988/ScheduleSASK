@@ -68,7 +68,6 @@ export const RegisterService = () => {
                     message: error.message,
                     messagecall: error.messagecall,
                 }));
-                console.log(String(error));
         }
     };
 
