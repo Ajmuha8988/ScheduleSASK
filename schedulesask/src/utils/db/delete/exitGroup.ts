@@ -28,9 +28,15 @@ export const DeleteGroupService = () => {
                     };
                 }
             } catch (error) {
-                throw {
-                    message: error.message || 'Произошла ошибка при удаление группы'
-                };
+                let errorMessage = '';
+                if (typeof error === 'object' && error !== null && 'message' in error) {
+                    // Приводим тип error к типу Error
+                    const typedError = error as Error;
+                    errorMessage = typedError.message;
+                } else {
+                    errorMessage = 'Произошла неизвестная ошибка при удаление группы';
+                }
+                throw new Error(errorMessage);
             }
     };
 

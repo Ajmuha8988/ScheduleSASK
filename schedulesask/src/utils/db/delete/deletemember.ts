@@ -24,9 +24,15 @@ export const DeleteMemberService = () => {
                     };
                 }
             } catch (error) {
-                throw {
-                    message: error.message || 'Произошла ошибка при удаление студента из группы'
-                };
+                let errorMessage = '';
+                if (typeof error === 'object' && error !== null && 'message' in error) {
+                    // Приводим тип error к типу Error
+                    const typedError = error as Error;
+                    errorMessage = typedError.message;
+                } else {
+                    errorMessage = 'Произошла неизвестная ошибка при удалении студента из группы';
+                }
+                throw new Error(errorMessage);
             }
     }
     return {deleteGroupMember};
