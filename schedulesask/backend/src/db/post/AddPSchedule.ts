@@ -135,7 +135,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                             .query(insertQuery);
                                         const groupId = body.NameGroup;
                                         const payload = { id: groupId };
-                                        const token = jwt.sign(payload, process.env.JWT_SECRET || 'Y2J!', { expiresIn: '7d' });
+                                        const token = jwt.sign(payload, process.env.TOKEN_GROUP || '', { expiresIn: '7d' });
                                         res.cookie('jwtpuorg', token, {
                                             httpOnly: true,
                                             secure: true,
@@ -189,7 +189,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                                     .query(insertQuery);
                                                 const groupId = body.NameGroup;
                                                 const payload = { id: groupId };
-                                                const token = jwt.sign(payload, process.env.JWT_SECRET || 'Y2J!', { expiresIn: '7d' });
+                                                const token = jwt.sign(payload, process.env.TOKEN_GROUP || '', { expiresIn: '7d' });
                                                 res.cookie('jwtpuorg', token, {
                                                     httpOnly: true,
                                                     secure: true,
@@ -232,7 +232,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                                         .query(insertQuery);
                                                     const groupId = body.NameGroup;
                                                     const payload = { id: groupId };
-                                                    const token = jwt.sign(payload, process.env.JWT_SECRET || 'Y2J!', { expiresIn: '7d' });
+                                                    const token = jwt.sign(payload, process.env.TOKEN_GROUP || '', { expiresIn: '7d' });
                                                     res.cookie('jwtpuorg', token, {
                                                         httpOnly: true,
                                                         secure: true,
@@ -287,7 +287,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                             .query(insertQuery);
                                         const groupId = body.NameGroup;
                                         const payload = { id: groupId };
-                                        const token = jwt.sign(payload, process.env.JWT_SECRET || 'Y2J!', { expiresIn: '7d' });
+                                        const token = jwt.sign(payload, process.env.TOKEN_GROUP || '', { expiresIn: '7d' });
                                         res.cookie('jwtpuorg', token, {
                                             httpOnly: true,
                                             secure: true,
@@ -454,7 +454,7 @@ export default async function addPSchedules(req: any, res: any): Promise<void> {
                                     .query(insertQuery);
                                 const groupId = body.NameGroup;
                                 const payload = { id: groupId };
-                                const token = jwt.sign(payload, process.env.JWT_SECRET || 'Y2J!', { expiresIn: '7d' });
+                                const token = jwt.sign(payload, process.env.TOKEN_GROUP || '', { expiresIn: '7d' });
                                 res.cookie('jwtpuorg', token, {
                                     httpOnly: true,
                                     secure: true,

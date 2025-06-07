@@ -35,7 +35,7 @@ export default async function authorizationUser(req: any, res: any): Promise<voi
             const userId = resultValidation.recordset[0]['ID_user'];
             const userData = dataUser[0];
             const payload = { id: userId };
-            const token = jwt.sign(payload, 'TheBestInTheWorld!')
+            const token = jwt.sign(payload, process.env.TOKEN_USER || '')
             res.cookie('jwt', token, {
                 httpOnly: true, // Защищает от XSS атак
                 secure: true, // Использовать только через HTTPS

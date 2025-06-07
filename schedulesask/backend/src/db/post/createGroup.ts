@@ -15,7 +15,7 @@ export default async function addGroup(req: any, res: any): Promise<void> {
         const body: GroupRequestBody = req.body;
         // Подключение к базе данных
         const pool = await sql.connect(sqlConfig);
-        const decodedToken = jwt.verify(req.cookies.jwt, 'TheBestInTheWorld!') as JwtPayload;
+        const decodedToken = jwt.verify(req.cookies.jwt, process.env.TOKEN_USER || '') as JwtPayload;
         console.log(decodedToken.id);
         const checkGroupQuery = `SELECT COUNT(*) AS count FROM Groups
         WHERE NameGroup = @namegroup;`;

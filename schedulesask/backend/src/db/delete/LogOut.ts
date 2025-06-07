@@ -2,6 +2,9 @@
 import sqlConfig from '../config/config';
 import generateRandomSequence from '../utils/Randomizer'
 import * as jwt from 'jsonwebtoken';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 interface JwtPayload {
     id: string | number; // Идентификатор пользователя (может быть строковым или числовым)
@@ -12,7 +15,7 @@ interface JwtPayload {
 export default async function logOut(req: any, res: any): Promise<void> {
     try {
         const tempIdUser = generateRandomSequence();
-        const decodedToken = jwt.verify(req.cookies.jwt, 'TheBestInTheWorld!') as JwtPayload;
+        const decodedToken = jwt.verify(req.cookies.jwt, process.env.TOKEN_USER || '') as JwtPayload;
         const pool = await sql.connect(sqlConfig);
         const updateQuery = `UPDATE TempIDUser
         SET Temp_ID_User = @newValue

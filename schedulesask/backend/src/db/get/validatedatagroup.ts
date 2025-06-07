@@ -14,7 +14,7 @@ export default async function ValidateDataGroup(req: Request, res: Response): Pr
         await sql.connect(sqlConfig);
 
         // Проверяем JWT токен пользователя
-        const decodedToken = jwt.verify(req.cookies.jwt, 'TheBestInTheWorld!') as JwtPayload;
+        const decodedToken = jwt.verify(req.cookies.jwt, process.env.TOKEN_USER || '') as JwtPayload;
         const request = new sql.Request();
         const result = await request.input('userId', sql.BigInt, decodedToken.id)
             .query(`SELECT ID_Group ,NameGroup FROM Groups WHERE ID_Teacher = @userId`);

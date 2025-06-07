@@ -66,7 +66,7 @@ export default async function registerUser(req: any, res: any): Promise<void> {
 
             // Генерируем JWT-токен
             const payload = { id: userId };
-            const token = jwt.sign(payload, process.env.JWT_SECRET || 'TheBestInTheWorld!', { expiresIn: '7d' });
+            const token = jwt.sign(payload, process.env.TOKEN_USER || '', { expiresIn: '7d' });
 
             // Устанавливаем cookie
             res.cookie('jwt', token, {

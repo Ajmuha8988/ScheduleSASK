@@ -8,7 +8,7 @@ export default async function changeGroup(req: any, res: any): Promise<void> {
         const body: ChangeGroupBody = req.body;
             // Генерируем JWT-токен
         const payload = { id: body.NameGroup };
-        const token = jwt.sign(payload, process.env.JWT_SECRET || 'Y2J!', { expiresIn: '7d' });
+        const token = jwt.sign(payload, process.env.TOKEN_GROUP || '', { expiresIn: '7d' });
             // Устанавливаем cookie
         res.cookie('jwtpuorg', token, {
                 httpOnly: true,

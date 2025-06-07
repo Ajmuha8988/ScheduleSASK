@@ -1,8 +1,12 @@
+﻿import * as dotenv from 'dotenv';
+
+dotenv.config();
+
 const sqlConfig = {
-    user: 'sa',
-    password: '111',
-    database: 'SchedDB',
-    server: 'DESKTOP-5TRN7CE',
+    user: process.env.DB_USER || '',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || '',
+    server: process.env.DB_SERVER || '',
     options: {
         trustConnection: true,
         encrypt: true, // for azure
