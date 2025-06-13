@@ -1,11 +1,12 @@
-﻿interface RoomData {
+﻿import { API_URL } from '../../API/config_APIts';
+interface RoomData {
     NameRoom: string;
 }
 
 export const RoomService = () => {
     const addRoom = async (roomData: RoomData) => {
             try {
-                const response = await fetch('http://localhost:8080/administrator/addRoom', {
+                const response = await fetch(API_URL + '/administrator/addRoom', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

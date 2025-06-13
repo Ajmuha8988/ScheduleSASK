@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { API_URL } from '../../API/config_APIts';
 interface PSchedulePart {
     Lastname: string;
     Firstname: string;
@@ -23,7 +24,7 @@ export const GetAllPartPscheduleDenumerator = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/administrator/PScheduleDenumeratorPart', { credentials: 'include' })
+        fetch(API_URL + '/administrator/PScheduleDenumeratorPart', { credentials: 'include' })
             .then(response => response.json())
             .then(data => {
                 setaDenumeratorPschedulePart(data);

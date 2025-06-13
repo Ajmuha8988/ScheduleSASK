@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
-
+import { API_URL } from '../../API/config_APIts';
 interface Plan {
     Lastname: string;
     Firstname: string;
@@ -18,7 +18,7 @@ export const GetPlan = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null); // Новое состояние для сообщений об ошибках
 
     useEffect(() => {
-        fetch('http://localhost:8080/Plan', { credentials: 'include' })
+        fetch(API_URL + '/Plan', { credentials: 'include' })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Ошибка сервера: ${response.statusText}`);

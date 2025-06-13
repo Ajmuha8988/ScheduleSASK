@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { API_URL } from '../../API/config_APIts';
 
 // Кастомный хук для получения данных
 export const GetTeacherID = () => {
@@ -6,7 +7,7 @@ export const GetTeacherID = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://localhost:8080/ID_Teacher', { credentials: 'include' })
+        fetch(API_URL + '/ID_Teacher', { credentials: 'include' })
             .then(response => response.json())
             .then(data => {
                 setteacher(data);

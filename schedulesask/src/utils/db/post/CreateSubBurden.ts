@@ -1,4 +1,5 @@
-﻿interface GeneralSubBurden {
+﻿import { API_URL } from '../../API/config_APIts';
+interface GeneralSubBurden {
     ID_TeacherPlan: bigint;
     NumeratorPlan: number;
     DenominatorPlan: number;
@@ -10,7 +11,7 @@ interface ServerErrors {
 export const GeneralSubBurdenService = () => {
     const addGeneralSubBurden = async (generalSubBurden: GeneralSubBurden) => {
             try {
-                const response = await fetch('http://localhost:8080/administrator/addSubGeneralBurden', {
+                const response = await fetch(API_URL + '/administrator/addSubGeneralBurden', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { API_URL } from '../../API/config_APIts';
+import { useState, useEffect } from 'react';
 interface NameGroup {
     ID_Group: bigint;
     NameGroup: string;
@@ -9,7 +10,7 @@ export const GetNameGroups = () => {
     const [loading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {
-        fetch('http://localhost:8080/teacher/validategroup', { credentials: 'include' })
+        fetch(API_URL + '/teacher/validategroup', { credentials: 'include' })
             .then(response => response.json())
             .then(data => {
                 setaNameGroup(data);

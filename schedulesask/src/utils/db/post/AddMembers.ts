@@ -1,5 +1,6 @@
 ﻿import { useNavigate } from 'react-router-dom';
 import { GetNameGroups } from '../get/GetGroups';
+import { API_URL } from '../../API/config_APIts';
 interface MembersData {
     ID_Students: bigint;
 }
@@ -12,7 +13,7 @@ export const MemberService = () => {
     if (!loading && IDgroups !== null) {
         const addMember = async (membersData: MembersData) => {
             try {
-                const response = await fetch('http://localhost:8080/teacher/AddMember', {
+                const response = await fetch(API_URL + '/teacher/AddMember', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

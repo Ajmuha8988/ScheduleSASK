@@ -1,4 +1,5 @@
-﻿interface PScheduleData {
+﻿import { API_URL } from '../../API/config_APIts';
+interface PScheduleData {
     NameGroup: string;
     ID_Lesson: bigint;
     ID_Room: bigint;
@@ -17,7 +18,7 @@ interface ServerErrors {
 export const PScheduleService = () => {
     const addPSchedule = async (pscheduleData: PScheduleData) => {
         try {
-            const response = await fetch('http://localhost:8080/administrator/addPSchedules', {
+            const response = await fetch(API_URL + '/administrator/addPSchedules', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

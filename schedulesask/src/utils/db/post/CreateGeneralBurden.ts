@@ -1,4 +1,5 @@
-﻿interface GeneralBurdenData {
+﻿import { API_URL } from '../../API/config_APIts';
+interface GeneralBurdenData {
     ID_Teacher: bigint;
     FirstSemester: number;
     SecondSemester: number;
@@ -7,7 +8,7 @@
 export const GeneralBurdenService = () => {
         const addGeneralBurden = async (groupData: GeneralBurdenData) => {
             try {
-                const response = await fetch('http://localhost:8080/administrator/addGeneralBurden', {
+                const response = await fetch(API_URL + '/administrator/addGeneralBurden', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

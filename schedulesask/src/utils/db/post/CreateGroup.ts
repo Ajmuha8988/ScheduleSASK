@@ -1,5 +1,5 @@
 ﻿import { useNavigate } from 'react-router-dom';
-
+import { API_URL } from '../../API/config_APIts';
 interface GroupData {
     NameGroup: string;
 }
@@ -8,7 +8,7 @@ export const GroupService = () => {
     const navigate = useNavigate();
     const addGroup = async (groupData: GroupData) => {
             try {
-                const response = await fetch('http://localhost:8080/teacher/addGroup', {
+                const response = await fetch(API_URL + '/teacher/addGroup', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

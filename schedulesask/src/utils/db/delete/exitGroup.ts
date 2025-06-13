@@ -1,5 +1,6 @@
 ﻿import { useNavigate } from 'react-router-dom';
 import { GetNameGroups } from '../get/GetGroups';
+import { API_URL } from '../../API/config_APIts';
 
 export const DeleteGroupService = () => {
     const navigate = useNavigate();
@@ -8,7 +9,7 @@ export const DeleteGroupService = () => {
     if (!loading && IDgroups !== null) {
         const exitgroup = async () => {
             try {
-                const response = await fetch('http://localhost:8080/teacher/exitgroup', {
+                const response = await fetch(API_URL + '/teacher/exitgroup', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

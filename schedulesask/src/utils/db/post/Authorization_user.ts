@@ -1,4 +1,5 @@
 ﻿import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../API/config_APIts';
 
 interface AuthorizateData {
     Email: string;
@@ -13,7 +14,7 @@ export const AuthorizateService = () => {
 
         try {
             // Отправляем данные на сервер
-            const response = await fetch('http://localhost:8080/authorization', {
+            const response = await fetch(API_URL + '/authorization', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

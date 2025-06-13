@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
-
+import { API_URL } from '../../API/config_APIts';
 interface PlanLesson {
     NameGroup: string;
     KindOfSemester: string;
@@ -15,7 +15,7 @@ export const GetPlanLesson = () => {
     const [loadingPlanLesson, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {
-        fetch('http://localhost:8080/administrator/GetPlanLesson', { credentials: 'include' })
+        fetch(API_URL + '/administrator/GetPlanLesson', { credentials: 'include' })
             .then(response => response.json())
             .then(data => {
                 setPlanLesson(data);

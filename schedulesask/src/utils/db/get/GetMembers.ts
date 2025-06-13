@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { API_URL } from '../../API/config_APIts';
 interface Member {
     ID_members_group: string;
     Lastname: string;
@@ -11,7 +12,7 @@ export const GetMember = () => {
     const [loading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {
-        fetch('http://localhost:8080/teacher/Members', { credentials: 'include' })
+        fetch(API_URL + '/teacher/Members', { credentials: 'include' })
             .then(response => response.json())
             .then(data => {
                 setadataMembers(data);

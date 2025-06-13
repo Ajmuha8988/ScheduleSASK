@@ -1,4 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
+import { API_URL } from '../../API/config_APIts';
+
 interface SubBurden {
     ID_TeacherPlan: number;
     NumeratorPlan: number;
@@ -10,7 +12,7 @@ export const GetAllSubBurden = () => {
     const [SubBurdenloading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {
-        fetch('http://localhost:8080/AllSubBurden', { credentials: 'include' })
+        fetch(API_URL + '/AllSubBurden', { credentials: 'include' })
             .then(response => response.json())
             .then(data => {
                 setAllSubBurden(data);

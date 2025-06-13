@@ -1,4 +1,5 @@
 ﻿import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../API/config_APIts';
 interface PScheduleRequestBody {
     ID_PSchedule: bigint
 }
@@ -7,7 +8,7 @@ export const DeletePScheduleService = () => {
     const navigate = useNavigate();
     const deletePScheduleMember = async (PScheduleData: PScheduleRequestBody) => {
             try {
-                const response = await fetch('http://localhost:8080/administrator/deletePSchedule', {
+                const response = await fetch(API_URL + '/administrator/deletePSchedule', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

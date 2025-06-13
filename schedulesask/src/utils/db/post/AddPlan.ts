@@ -1,4 +1,5 @@
-﻿interface PlanData {
+﻿import { API_URL } from '../../API/config_APIts';
+interface PlanData {
     ID_Teacher: bigint;
     ID_Lesson: bigint;
     ID_Group: bigint;
@@ -10,7 +11,7 @@
 export const PlanDataService = () => {
     const addPlan = async (planData: PlanData) => {
         try {
-            const response = await fetch('http://localhost:8080/administrator/addPlan', {
+            const response = await fetch(API_URL + '/administrator/addPlan', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

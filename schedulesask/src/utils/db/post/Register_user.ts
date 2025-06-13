@@ -1,4 +1,5 @@
 ﻿import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../API/config_APIts';
 interface RegisterData {
     Lastname: string;
     Firstname: string;
@@ -17,7 +18,7 @@ export const RegisterService = () => {
     const registerUser = async (registerData: RegisterData) => {
 
         try {
-            const response = await fetch('http://localhost:8080/register', {
+            const response = await fetch(API_URL + '/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

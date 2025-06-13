@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { API_URL } from '../../API/config_APIts';
 interface Role {
     Role: string
 }
@@ -8,7 +9,7 @@ export const GetRoleID = () => {
     const [loading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {
-        fetch('http://localhost:8080/RoleID', { credentials: 'include' })
+        fetch(API_URL + '/RoleID', { credentials: 'include' })
             .then(response => response.json())
             .then(data => {
                 setDataRole(data);

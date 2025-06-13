@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { API_URL } from '../../API/config_APIts';
 interface NameGroup {
     NameGroup: string;
 }
@@ -8,7 +9,7 @@ export const GetNamegroup = () => {
     const [loading, setLoading] = useState(true); // Статус загрузки
 
     useEffect(() => {
-        fetch('http://localhost:8080/administrator/GroupInConstructor', { credentials: 'include' })
+        fetch(API_URL + '/administrator/GroupInConstructor', { credentials: 'include' })
             .then(response => response.json())
             .then(data => {
                 setGroupName(data);

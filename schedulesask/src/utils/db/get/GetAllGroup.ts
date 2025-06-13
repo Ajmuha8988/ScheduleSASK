@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { API_URL } from '../../API/config_APIts';
+import { useState, useEffect } from 'react';
 interface Groups {
     NameGroup: string;
     ID_Group: number;
@@ -7,7 +8,7 @@ interface Groups {
 export const GetAllgroups = () => {
     const [dataGroups, setDataGroups] = useState<Groups[]>([]);
     useEffect(() => {
-        fetch('http://localhost:8080/AllGroups')
+        fetch(API_URL + '/AllGroups')
             .then(response => response.json())
             .then(data => setDataGroups(data))
             .catch(error => console.error('Ошибка:', error));

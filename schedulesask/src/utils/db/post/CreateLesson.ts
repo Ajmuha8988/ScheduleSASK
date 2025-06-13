@@ -1,11 +1,12 @@
-﻿interface LessonData {
+﻿import { API_URL } from '../../API/config_APIts';
+interface LessonData {
     NameLesson: string;
 }
 
 export const LessonService = () => {
     const addLesson = async (lessonData: LessonData) => {
             try {
-                const response = await fetch('http://localhost:8080/administrator/addLesson', {
+                const response = await fetch(API_URL + '/administrator/addLesson', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

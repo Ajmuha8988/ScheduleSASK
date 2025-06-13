@@ -1,4 +1,5 @@
-﻿interface SecondSemesterData {
+﻿import { API_URL } from '../../API/config_APIts';
+interface SecondSemesterData {
     CallNumbers: string;
     NameLessons: string;
     NameGroups: string;
@@ -9,7 +10,7 @@
 export const DeleteSecondSemesterPlanService = () => {
     const deleteSecondSemesterPlan = async (secondsemesterData: SecondSemesterData) => {
             try {
-                const response = await fetch('http://localhost:8080/administrator/deleteSecondPlan', {
+                const response = await fetch(API_URL + '/administrator/deleteSecondPlan', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

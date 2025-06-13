@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { API_URL } from '../../API/config_APIts';
 interface TeacherBurden {
     Lastname: string;
     Firstname: string;
@@ -12,7 +13,7 @@ export const GetTeacherinburden = () => {
     const [dataTeacherInBurden, setTeacherInBurden] = useState<TeacherBurden[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/administrator/GetTeacherInBurden')
+        fetch(API_URL + '/administrator/GetTeacherInBurden')
             .then(response => response.json())
             .then(data => setTeacherInBurden(data))
             .catch(error => console.error('Ошибка:', error));

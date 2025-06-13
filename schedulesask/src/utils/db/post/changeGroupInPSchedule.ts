@@ -1,11 +1,12 @@
-﻿interface changeGroup {
+﻿import { API_URL } from '../../API/config_APIts';
+interface changeGroup {
     NameGroup: string;
 }
 
 export const changeGroupService = () => {
     const EventChangeGroup = async (groupData: changeGroup) => {
         try {
-            const response = await fetch('http://localhost:8080/administrator/changeGroup', {
+            const response = await fetch(API_URL + '/administrator/changeGroup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

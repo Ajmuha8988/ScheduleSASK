@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { API_URL } from '../../API/config_APIts';
 interface Student {
     Lastname: string;
     Firstname: string;
@@ -10,7 +11,7 @@ export const GetStudents = () => {
     const [dataStudents, setDataStudents] = useState<Student[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/ID_Student')
+        fetch(API_URL + '/ID_Student')
             .then(response => response.json())
             .then(data => setDataStudents(data))
             .catch(error => console.error('Ошибка:', error));

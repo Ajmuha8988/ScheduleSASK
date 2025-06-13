@@ -1,4 +1,5 @@
 ﻿import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../API/config_APIts';
 interface MembersData {
     ID_Students: string;
 }
@@ -7,7 +8,7 @@ export const DeleteMemberService = () => {
     const navigate = useNavigate();
     const deleteGroupMember = async (membersData: MembersData) => {
             try {
-                const response = await fetch('http://localhost:8080/teacher/deleteStudentInGroup', {
+                const response = await fetch(API_URL + '/teacher/deleteStudentInGroup', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
