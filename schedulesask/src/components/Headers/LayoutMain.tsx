@@ -12,7 +12,7 @@ const LayoutMain = () => {
             <header className="bg-dark font-for-headers">
                 <nav className="navbar navbar-dark navbar-expand-lg navbar-warning bg-dark container">
                 <a className="navbar-brand" >
-                    <img width="150" height="50" src='./Log_SASK24.png' alt="Alternate Text" />
+                    <img width="150" height="50" src='/Log_SASK24.png' alt="Alternate Text" />
                     </a>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon "></span>
