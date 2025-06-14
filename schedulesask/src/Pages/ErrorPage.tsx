@@ -1,13 +1,14 @@
 ﻿import LayoutMain from "../components/Headers/LayoutMain"
 import { useEffect } from 'react';
 import ErrorBody from "../components/Body/ErrorBody"
+import { API_URL } from '../utils/API/config_APIts';
 
 const ErrorPage = () => {
     useEffect(() => {
         const handleLogout = async () => {
             try {
                 // Отправляем запрос на сервер для удаления куки
-                await fetch('http://localhost:8080/logout', {
+                await fetch(API_URL + '/logout', {
                     method: 'POST',
                     credentials: 'include'
                 });
