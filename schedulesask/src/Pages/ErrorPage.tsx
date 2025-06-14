@@ -23,10 +23,10 @@ const ErrorPage = () => {
         handleLogout(); // Немедленно выполняем выход при первой загрузке страницы
     }, []); // Пустой массив зависимостей гарантирует выполнение эффекта только при монтировании компонента
     return (
-        <html>
+        <>
             <LayoutMain></LayoutMain>
             <ErrorBody></ErrorBody>
-        </html>
+        </>
     );
 };
 export default ErrorPage;

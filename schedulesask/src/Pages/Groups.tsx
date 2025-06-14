@@ -12,10 +12,10 @@ const Groups = () => {
                     <BeatLoader color="#ffc107" size={20} />
                 </div>
             ) : (
-                <html>
+                <>
                     <LayoutTeacher></LayoutTeacher>
                     <BodyGroups></BodyGroups>
-                </html>
+                </>
             )}
         </>
     );

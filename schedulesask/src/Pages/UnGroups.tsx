@@ -12,10 +12,10 @@ const UnGroups = () => {
                     <BeatLoader color="#ffc107" size={20} />
                 </div>
             ) : (
-                <html>
+                <>
                     <LayoutTeacher></LayoutTeacher>
                     <UnBodyGroups></UnBodyGroups>
-                </html>
+                </>
             )}
         </>
     );
