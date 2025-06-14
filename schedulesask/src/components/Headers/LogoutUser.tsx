@@ -1,6 +1,7 @@
 ﻿import { useNavigate } from 'react-router-dom';
 import { useCallback } from 'react';
 import "./mobileheaders.css"
+import { API_URL } from '../../utils/API/config_APIts';
 
 type Props = {
     onLogout?: () => void; // Опциональный колбэк для дополнительной логики
@@ -11,7 +12,7 @@ const LogoutButton: React.FC<Props> = ({ onLogout }) => {
     const handleLogout = useCallback(async () => {
         try {
             // Отправляем запрос на сервер для удаления куку
-            await fetch('http://localhost:8080/logout', {
+            await fetch(API_URL + '/logout', {
                 method: 'POST', // Или GET, зависит от вашей серверной логики
                 credentials: 'include' // Включаем cookies в запрос
             });
