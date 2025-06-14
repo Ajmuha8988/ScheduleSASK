@@ -9,6 +9,7 @@ import RoutingInAdministratorsMobile from '../Routing/RoutingInAdministratorMobi
 import ValidationAdministrator from '../../utils/Validation/ValidationPageAdministrator'
 import { useNavigate } from 'react-router-dom'
 import { BeatLoader } from 'react-spinners';
+import logo from './Log_SASK24.png';
 
 
 const LayoutAdministrator = () => {
@@ -24,7 +25,7 @@ const LayoutAdministrator = () => {
                     <header className="bg-dark font-for-headers">
                         <nav className="navbar navbar-dark navbar-expand-lg navbar-warning bg-dark container">
                             <a className="navbar-brand" onClick={() => navigate('/administrator')} >
-                                <img width="150" height="50" src="./Log_SASK24.png" alt="Alternate Text" />
+                                <img width="150" height="50" src={logo} alt="Alternate Text" />
                             </a>
                             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                                 <span className="navbar-toggler-icon "></span>
