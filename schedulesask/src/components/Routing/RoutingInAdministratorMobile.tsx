@@ -3,6 +3,7 @@ import AddRoomButton from "../Headers/ModalRooms"
 import AddLessonButton from "../Headers/ModalLessons"
 import { useNavigate } from 'react-router-dom';
 import ModalSettingsBurden from "../Headers/ModalSettingsBurden"
+import AddDateSecondSemesterButton from "../Headers/ModalDateSecondSemester"
 
 const RoutingInAdministratorsMobile  = () => {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ const RoutingInAdministratorsMobile  = () => {
                     <AddLessonButton />
                     <ModalSettingsBurden />
                     <li><button className="dropdown-item text-light" onClick={() => navigate('/administrator/planconstructor')}>Учебный план</button></li>
-                    <li><button className="dropdown-item text-light">Временное расписание</button></li>
+                    <AddDateSecondSemesterButton />
                 </ul>
             </div>
         </div>

@@ -1,8 +1,11 @@
 ﻿import { GetAllPartPscheduleDenumerator } from '../db/get/getAllPartPSchedulePartDenumerator';
-import { GetNamegroup } from '../../utils/db/get/GetNameGroup';
+import { GetNamegroup } from '../db/get/GetNameGroup';
+import { calculateSemester } from '../Date/CalculateSemester';
+
 export const PScheduleDenumerator = (numberLesson: number, dayOfWeek: string) => {
     const { dataDenumeratorPschedulePart, DenumeratorLoading, errorMessage } = GetAllPartPscheduleDenumerator();
     const { dataGroupName, loading } = GetNamegroup();
+    const { dataSemester } = calculateSemester();
     const nameGroup = dataGroupName.length > 0 ? dataGroupName[0].NameGroup : null;
     if (!DenumeratorLoading && Array.isArray(dataDenumeratorPschedulePart) && !loading) {
             if (errorMessage) {
@@ -10,9 +13,9 @@ export const PScheduleDenumerator = (numberLesson: number, dayOfWeek: string) =>
             }
             else {
                 const filteredData = dataDenumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson
-                    && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === "Знаменатель" && item.NameGroup === nameGroup);
+                    && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === "Знаменатель" && item.NameGroup === nameGroup && item.KindOfSemester === dataSemester);
                 const tempIDsFromFilteredData = new Set(filteredData.map(item => item.Temp_ID_User));
-                const validateData = dataDenumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson
+                const validateData = dataDenumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
                     && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === "Знаменатель" && item.NameGroup !== nameGroup &&
                     tempIDsFromFilteredData.has(item.Temp_ID_User));
                 if (filteredData.length > 0) {
