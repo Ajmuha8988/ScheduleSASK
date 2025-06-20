@@ -1,14 +1,13 @@
 ﻿import { useState, useEffect } from 'react';
 import "./mobilebody.css";
 import {
-    TextField, Autocomplete, ThemeProvider, FormControlLabel, Switch,
-    FormControl, FormGroup
+    TextField, Autocomplete, ThemeProvider,
 } from "@mui/material";
 import { createTheme } from "@mui/material";
 import 'react-phone-input-2/lib/material.css';
 import * as React from 'react';
 import { changeGroupService } from '../../utils/db/post/changeGroupInPSchedule';
-import { PScheduleService } from '../../utils/db/post/AddPSchedule';
+import { TScheduleService } from '../../utils/db/post/AddTSchedule';
 import { GeneralSubBurdenService } from '../../utils/db/post/CreateSubBurden';
 import { GetAllgroups } from '../../utils/db/get/GetAllGroup';
 import { GetPlanLesson } from '../../utils/db/get/GetPlanLesson';
@@ -16,20 +15,18 @@ import { GetAllrooms } from '../../utils/db/get/GetAllRoom';
 import { GetAllTeacher } from '../../utils/db/get/GetAllTeacher';
 import { GetAllSubBurden } from '../../utils/db/get/getAllSubBurden';
 import { GetNamegroup } from '../../utils/db/get/GetNameGroup';
-import { styled, alpha } from "@mui/material/styles";
-import InputAdornment from '@mui/material/InputAdornment';
-import { inputBaseClasses } from '@mui/material/InputBase';
+import { styled } from "@mui/material/styles";
 import { calculateSemester } from '../../utils/Date/CalculateSemester';
 import { Modal } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import dayjs, { Dayjs } from 'dayjs'; // Обязательно импортируйте библиотеку Day.js
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { DateField } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 interface OptionType {
     label: string;
     value: bigint;
-}
-interface OptionTypeString {
-    label: string;
-    value: string;
 }
 interface OptionTypeNumberLessons {
     label: string;
@@ -81,22 +78,9 @@ const StyledAutocomplete = styled(Autocomplete)({
         }
     }
 });
-const SASKSwitch = styled(Switch)(({ theme }) => ({
-    '& .MuiSwitch-switchBase.Mui-checked': {
-        color: "#ffc107",
-        '&:hover': {
-            backgroundColor: alpha("#ffc107", theme.palette.action.hoverOpacity),
-        },
-    },
-    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: "#ffc107",
-    },
-}));
 const numberLesson = [1, 2, 3, 4, 5, 6, 7];
-const daysOfweek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-const kindOfschedules = ['Числитель', 'Знаменатель'];
-const AddPScheduleForm = () => {
-    const navigate = useNavigate();
+const AddTScheduleForm = () => {
+    const [DateTSchedules, setDatesecondSemester] = useState<Dayjs | null>(dayjs());
     const [showAddSubBurden, SetAddSubBurden] = useState(false);
     const [errorFirst, SetErrorFirst] = useState<string | null>(null);
     const [errorSecond, SetErrorSecond] = useState<string | null>(null);
@@ -106,7 +90,7 @@ const AddPScheduleForm = () => {
     const [errorInTeacherTime, SetErrorInTeacherTime] = useState<string | null>(null);
     const [successSubBurden, SetSuccessSubBurden] = useState<string | null>(null);
     const [successPSchedule, SetSuccessPSchedule] = useState<string | null>(null);
-    const { addPSchedule } = PScheduleService();
+    const { addTSchedule } = TScheduleService();
     const { addGeneralSubBurden } = GeneralSubBurdenService();
     const { EventChangeGroup } = changeGroupService();
     const { dataSemester } = calculateSemester();
@@ -124,16 +108,16 @@ const AddPScheduleForm = () => {
     const [ID_Rooms, setID_Room] = useState<bigint | null>(null);
     const [ID_Teacher, setID_Teacher] = useState<bigint | null>(null);
     const [NumberLessons, setNumberLesson] = useState<number | null>(null);
-    const [DaysOfWeeks, setDaysOfWeek] = useState<string | null>(null);
-    const [KindOfSchedule, setKindOfSchedule] = useState<string | null>(null);
     const [FirstHours, setFirstHour] = useState<number | null>(null);
     const [SecondHours, setSecondHour] = useState<number | null>(null);
-    const [CombinedCouples, SetCombinedCouple] = useState(false);
     const group = GetAllgroups();
     const { dataPlanLesson } = GetPlanLesson();
     const { dataAllSubBurden } = GetAllSubBurden();
     const room = GetAllrooms();
     const teacher = GetAllTeacher();
+    const handleChange = (newValue: Dayjs | null) => {
+        setDatesecondSemester(newValue); // Теперь это работает правильно
+    };
     const filteredDataPlanLesson = dataPlanLesson.filter(
         lesson => Number(lesson.Temp_ID_User) === Number(ID_Teacher) && // Предполагается, что данные содержат Teacher_Temp_ID
         lesson.NameGroup === CurrentNameGroup && lesson.KindOfSemester === dataSemester
@@ -161,14 +145,6 @@ const AddPScheduleForm = () => {
         label: numberLessonss,
         value: numberLessonss,
     }));
-    const optionsDOW = daysOfweek.map(daysOfweeks => ({
-        label: daysOfweeks,
-        value: daysOfweeks,
-    }));
-    const optionsKOS = kindOfschedules.map(kindOfscheduless => ({
-        label: kindOfscheduless,
-        value: kindOfscheduless,
-    }));
     const [error, setError] = useState<string | null>(null);
     const changeGroup = async (groupId: string) => {
         try {
@@ -185,20 +161,18 @@ const AddPScheduleForm = () => {
     const AddPScheduleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (!ID_Rooms || !ID_Lessons || !NumberLessons || !ID_Teacher
-            || !DaysOfWeeks || !KindOfSchedule) {
+            || !DateTSchedules) {
             console.log("Невозможно добавить учебный расписание.");
             return;
         }
         try {
-             const successPSchedule = await addPSchedule({
+             const successPSchedule = await addTSchedule({
                 NameGroup: CurrentNameGroup,
                 ID_Lesson: ID_Lessons,
                 ID_Room: ID_Rooms,
                 ID_user: ID_Teacher,
                 NumberLesson: NumberLessons,
-                DaysOfWeek: DaysOfWeeks,
-                KindOfSchedules: KindOfSchedule,
-                CombinedCouple: CombinedCouples
+                TimeDate: DateTSchedules.format('DD/MM/YYYY'),
              });
             if (successPSchedule && typeof successPSchedule === 'string') { // Убедитесь, что возвращается именно строка
                 SetSuccessPSchedule(successPSchedule); // Устанавливаем сообщение успеха
@@ -291,16 +265,6 @@ const AddPScheduleForm = () => {
             } else {
                 setError(String(err));
             }
-        }
-    };
-    const handleToggleChange = (event : React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.checked === true) {
-            console.log(event.target.checked);
-            SetCombinedCouple(true);
-        }
-        else{
-            console.log(event.target.checked);
-            SetCombinedCouple(false);
         }
     };
     return (
@@ -454,179 +418,40 @@ const AddPScheduleForm = () => {
                                                     setNumberLesson(typedNewValue.value);
                                                 }
                                         }}
-                                    />
-                                    <StyledAutocomplete
-                                        className="w-25 smw-100 mt-2"
-                                        id="combo-box-demo"
-                                        options={optionsDOW}
-                                        noOptionsText={"Произошла ошибка"}
-                                            getOptionLabel={(option) => typeof option === 'object' && option !== null
-                                                ? (option as OptionTypeString).label
-                                                : ''
-                                            }
-                                        renderInput={(params) => <TextField
-                                            required
-                                            {...params}
-                                            label="День недели" />}
-                                            onChange={(_, newValue) => {
-                                                const typedNewValue = newValue as OptionTypeString;
-                                                if (typedNewValue === null) {
-                                                    setDaysOfWeek(null);
-                                                }
-                                                else {
-                                                    setDaysOfWeek(typedNewValue.value);
-                                                }
-                                        }}
-                                    />
-                                    <StyledAutocomplete
-                                        className="w-25 smw-100 mt-2"
-                                        id="combo-box-demo"
-                                        options={optionsKOS}
-                                        noOptionsText={"Произошла ошибка"}
-                                            getOptionLabel={(option) => typeof option === 'object' && option !== null
-                                                ? (option as OptionTypeString).label
-                                                : ''
-                                            }
-                                        renderInput={(params) => <TextField
-                                            required
-                                            {...params}
-                                            label="Тип расписание" />}
-                                            onChange={(_, newValue) => {
-                                                const typedNewValue = newValue as OptionTypeString;
-                                                if (typedNewValue === null) {
-                                                    setKindOfSchedule(null);
-                                                }
-                                                else {
-                                                    setKindOfSchedule(typedNewValue.value);
-                                                }
-                                        }}
-                                    />
-                                    <ThemeProvider theme={theme}>
-                                        <div className="mt-2 w-25 smw-100">
-                                            <TextField
-                                                id="standard-suffix-shrink"
-                                                label="Количество пар в 1-ом семестре"
-                                                variant="standard"
-                                                color='warning'
-                                                value={FirstHours || ''}
-                                                InputProps={{
-                                                    style: {
-                                                        fontFamily: 'Vollda',
-                                                        color: '#616161',
-                                                    },
-                                                }}
-                                                InputLabelProps={{
+                                        />
+                                        <ThemeProvider theme={theme}>
+                                            <div className="w-25 smw-100">
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DemoContainer components={['DateField']}>
+                                                        <DateField
+                                                            InputProps={{
 
-                                                    style: {
-                                                        fontFamily: 'Vollda',
-                                                        color: '#616161',
-                                                    },
-                                                }}
-                                                slotProps={{
-                                                    htmlInput: {
-                                                        sx: {
-                                                            textAlign: 'center',
-                                                            fontFamily: 'Vollda',
-                                                            color: '#616161',
-                                                        },
-                                                    },
-                                                    input: {
-                                                        readOnly: true,
-                                                        endAdornment: (
-                                                            <InputAdornment
-                                                                className='font-for-headers'
-                                                                position="end"
-                                                                sx={{
-                                                                    alignSelf: 'flex-end',
-                                                                    margin: 0,
-                                                                    marginBottom: '5px',
-                                                                    opacity: 0,
-                                                                    pointerEvents: 'none',
-                                                                    [`[data-shrink=true] ~ .${inputBaseClasses.root} > &`]: {
-                                                                        opacity: 1,
-                                                                    },
+                                                                style: {
+                                                                    fontFamily: 'Vollda',
+                                                                },
+                                                            }}
+                                                            InputLabelProps={{
+
+                                                                style: {
                                                                     fontFamily: 'Vollda',
                                                                     color: '#616161',
-                                                                }}
-                                                            >
-                                                                часов
-                                                            </InputAdornment>
-                                                        ),
-                                                    },
-                                                }}
-                                            />
-                                        </div>
-                                    </ThemeProvider>
-                                    <ThemeProvider theme={theme}>
-                                        <div className="mt-2 w-25 smw-100">
-                                            <TextField
-                                                id="standard-suffix-shrink"
-                                                label="Количество пар во 2-ом семестре"
-                                                variant="standard"
-                                                value={SecondHours || ''}
-                                                color='warning'
-                                                InputProps={{
-                                                    style: {
-                                                        fontFamily: 'Vollda',
-                                                        color: '#616161',
-                                                    },
-                                                }}
-                                                InputLabelProps={{
-
-                                                    style: {
-                                                        fontFamily: 'Vollda',
-                                                        color: '#616161',
-                                                    },
-                                                }}
-                                                slotProps={{
-                                                    htmlInput: {
-                                                        sx: {
-                                                            textAlign: 'center',
-                                                            fontFamily: 'Vollda',
-                                                            color: '#616161',
-                                                        },
-                                                    },
-                                                    input: {
-                                                        readOnly: true,
-                                                        endAdornment: (
-                                                            <InputAdornment
-                                                                className='font-for-headers'
-                                                                position="end"
-                                                                sx={{
-                                                                    alignSelf: 'flex-end',
-                                                                    margin: 0,
-                                                                    marginBottom: '5px',
-                                                                    opacity: 0,
-                                                                    pointerEvents: 'none',
-                                                                    [`[data-shrink=true] ~ .${inputBaseClasses.root} > &`]: {
-                                                                        opacity: 1,
-                                                                    },
-                                                                    fontFamily: 'Vollda',
-                                                                    color: '#616161',
-                                                                }}
-                                                            >
-                                                                часов
-                                                            </InputAdornment>
-                                                        ),
-                                                    },
-                                                }}
-                                            />
-                                        </div>
-                                    </ThemeProvider>
-                                        <FormControl className="mt-2 w-25 smw-100" component="fieldset">
-                                            <FormGroup aria-label="position" row>
-                                                <FormControlLabel
-                                                    control={<SASKSwitch onChange={handleToggleChange} />}
-                                                    label="Совмещённая пара"
-                                                    labelPlacement="start"
-                                                    sx={{
-                                                        '.MuiFormControlLabel-label': { // Целимся на сам тег Label
-                                                            fontFamily: 'Vollda', // Семейство шрифта
-                                                        }
-                                                    }}
-                                            />
-                                        </FormGroup>
-                                    </FormControl>
+                                                                },
+                                                            }}
+                                                            color='warning' // Используем созданный нами цвет
+                                                            label="Дата"
+                                                            value={DateTSchedules}
+                                                            onChange={handleChange}
+                                                            id="Date"
+                                                            format='DD/MM/YYYY'
+                                                            variant="outlined"
+                                                            className='form-control'
+                                                            required
+                                                        />
+                                                    </DemoContainer>
+                                                </LocalizationProvider>
+                                            </div>
+                                        </ThemeProvider>
+                                    
                                 </>
                             )}
                            
@@ -636,7 +461,6 @@ const AddPScheduleForm = () => {
                 </>
            )}
                 <button type="submit" className="btn btn-warning text-light w-23 smw-40 mmt-2 smw-30 smmx-13 h-25 mt-2 " >Добавить</button>
-                <button className="btn btn-dark text-light w-23 mmt-2 smw-90 smmx-13 h-25 mt-2" onClick={() => navigate('/administrator/tscheduleconstructor')} >Составить замену расписание</button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 {errorInServer && <p style={{ color: 'red' }}>{errorInServer}</p>}
                 {errorInServerFirst && <p style={{ color: 'red' }}>{errorInServerFirst}</p>}
@@ -825,4 +649,4 @@ const AddPScheduleForm = () => {
     );
 };
 
-export default AddPScheduleForm;
+export default AddTScheduleForm;

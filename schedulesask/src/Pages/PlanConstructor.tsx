@@ -3,10 +3,11 @@ import PlanConstructorBody from "../components/Body/PlanConstructorBody"
 
 const PlanConstructor = () => {
     return (
-           <>
-                <LayoutAdministrator></LayoutAdministrator>
-                <PlanConstructorBody></PlanConstructorBody>
-           </>
+
+        <div className='wrapper'>
+            <LayoutAdministrator></LayoutAdministrator>
+            <PlanConstructorBody></PlanConstructorBody>
+        </div>
     );
 };
 export default PlanConstructor;

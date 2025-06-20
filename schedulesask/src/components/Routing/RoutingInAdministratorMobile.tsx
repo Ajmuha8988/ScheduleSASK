@@ -4,6 +4,7 @@ import AddLessonButton from "../Headers/ModalLessons"
 import { useNavigate } from 'react-router-dom';
 import ModalSettingsBurden from "../Headers/ModalSettingsBurden"
 import AddDateSecondSemesterButton from "../Headers/ModalDateSecondSemester"
+import GroupChangeList from "../Headers/GroupChangeList"
 
 const RoutingInAdministratorsMobile  = () => {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ const RoutingInAdministratorsMobile  = () => {
                     <AddDateSecondSemesterButton />
                 </ul>
             </div>
+            <GroupChangeList></GroupChangeList>
         </div>
 
     );

@@ -21,6 +21,12 @@
 .table-cell-break {
     white-space: pre-wrap; /* Позволяет переносить строки по \n */
 }
+.flex-01 {
+    flex-basis: 1%; /* Ширина половины родительского элемента */
+}
+.flex-59 {
+    flex-basis: 59%; /* Ширина половины родительского элемента */
+}
 .mms-2{
     margin-left: 0px;
 }
@@ -53,6 +59,9 @@
     .smw-100 {
         width: 100% !important;
     }
+    .smw-90 {
+        width: 90% !important;
+    }
 
     .smmx-13 {
         margin-left: 13px !important;
@@ -78,5 +87,8 @@
 @media (max-width:576px) {
     .smw-30 {
         width: 30% !important;
+    }
+    .smw-60 {
+        width: 60% !important;
     }
 }

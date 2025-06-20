@@ -6,6 +6,7 @@ import "./mobileheaders.css";
 import 'react-phone-input-2/lib/material.css';
 import RegisterButton from './ModalRegister'
 import AuthorizateButton from './ModalAuthorization'
+import GroupChangeList from "../Headers/GroupChangeList"
 
 const LayoutMain = () => {
     return (
@@ -13,20 +14,28 @@ const LayoutMain = () => {
                 <nav className="navbar navbar-dark navbar-expand-lg navbar-warning bg-dark container">
                 <a className="navbar-brand" >
                     <img width="150" height="50" src='/Log_SASK24.png' alt="Alternate Text" />
-                    </a>
+                </a>
+                <div className="collapse navbar-collapse justify-content-start mobile-fio-disabled" id="navbarNav">
+                    <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <GroupChangeList></GroupChangeList>
+                        </li>
+                    </ul>
+                </div>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon "></span>
                     </button>
                     <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
                         <ul className="navbar-nav">
-                            <>
                                     <li className="nav-item">
                                         <RegisterButton />
                                     </li>
                                     <li className="nav-item">
                                         <AuthorizateButton/>
                                     </li>
-                                </>
+                                    <li className="nav-item mobile-fio ms-2">
+                                        <GroupChangeList />
+                                    </li>
                         </ul>
                     </div>
                 </nav>

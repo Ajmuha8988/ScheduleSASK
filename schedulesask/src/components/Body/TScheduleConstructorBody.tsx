@@ -3,13 +3,13 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js"
 import "jquery/dist/jquery.slim.min.js"
 import "@popperjs/core/dist/umd/popper.min.js"
 import "./mobilebody.css"
-import AddPlanForm from './AddPlan';
-import ListSemesterPlan from './ListSemesterPlan';
+import AddTScheduleForm from './AddTSchedule';
+import TableForTSchedules from './TableForTSchedules';
 import ValidationAdministrator from '../../utils/Validation/ValidationPageAdministrator'
 import { BeatLoader } from 'react-spinners';
 import ScheduleFooter from "../Footer/ScheduleFooter"
 
-const PlanConstructorBody = () => {
+const TScheduleConstructorBody = () => {
     const { loading } = ValidationAdministrator(); // Получаем флаг загрузки
     return (
         <>
@@ -20,16 +20,17 @@ const PlanConstructorBody = () => {
             ) : (
                 <>
                         <body className="font-for-headers container mt-3 content">
-                            <AddPlanForm></AddPlanForm>
-                            <ListSemesterPlan></ListSemesterPlan>
+                            <AddTScheduleForm></AddTScheduleForm>
+                            <TableForTSchedules></TableForTSchedules>
                         </body>
                         <footer>
                             <ScheduleFooter></ScheduleFooter>
                         </footer>
                 </>
+                
             )}
-        </>
+        </> 
     );
 };
 
-export default PlanConstructorBody;
+export default TScheduleConstructorBody;

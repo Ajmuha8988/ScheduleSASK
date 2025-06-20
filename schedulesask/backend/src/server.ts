@@ -13,6 +13,7 @@ import addMembers from './db/post/AddMembers';
 import addPSchedules from './db/post/AddPSchedule';
 import changeGroup from './db/post/ChangeGroup';
 import addGeneralBurden from './db/post/createBurden';
+import addTSchedules from './db/post/AddTSchedule';
 import addSubGeneralBurden from './db/post/createSubBurden';
 import addPlans from './db/post/AddPlan';
 import removeGroup from './db/delete/removeGroup';
@@ -37,6 +38,7 @@ import { getPschedulePartDenumerator } from './db/get/GetAllPartPScheduleDenumer
 import { getNameGroupInGroup } from './db/get/GetNameGroupInConstructor';
 import { getPlanLesson } from './db/get/GetPlanLesson';
 import ValidateDataGroup from './db/get/validatedatagroup';
+import { StartSecondSemester } from './db/get/StartSecondSemester';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -57,6 +59,7 @@ connectToDatabase().then(() => {
         console.log('Сервер запущен на порту: 8080');
     });
 });
+app.get('/StartSecondSemester', StartSecondSemester);
 app.get('/ID_Student', getIDStudent);
 app.get('/RoleID', getRoleByUserID);
 app.get('/ID_Teacher', getTeacherID);
@@ -82,6 +85,7 @@ app.post('/administrator/addRoom', addRoom);
 app.post('/administrator/addLesson', addLesson);
 app.post('/administrator/addDateSecondSemester', CreateDateSecondSemester);
 app.post('/administrator/addPSchedules', addPSchedules);
+app.post('/administrator/addTSchedules', addTSchedules);
 app.post('/administrator/addGeneralBurden', addGeneralBurden);
 app.post('/administrator/addSubGeneralBurden', addSubGeneralBurden);
 app.post('/administrator/addPlan', addPlans);

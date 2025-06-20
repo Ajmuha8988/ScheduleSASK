@@ -7,6 +7,7 @@ import AddPScheduleForm from './AddPSchedule';
 import TableForPSchedules from './TableForPSchedules';
 import ValidationAdministrator from '../../utils/Validation/ValidationPageAdministrator'
 import { BeatLoader } from 'react-spinners';
+import ScheduleFooter from "../Footer/ScheduleFooter"
 
 const PScheduleConstructorBody = () => {
     const { loading } = ValidationAdministrator(); // Получаем флаг загрузки
@@ -17,10 +18,16 @@ const PScheduleConstructorBody = () => {
                     <BeatLoader color="#ffc107" size={20} />
                 </div >
             ) : (
-                <body className="font-for-headers container mt-3">
-                    <AddPScheduleForm></AddPScheduleForm>
-                    <TableForPSchedules></TableForPSchedules>
-                </body>
+                <>
+                        <body className="font-for-headers container mt-3 content">
+                            <AddPScheduleForm></AddPScheduleForm>
+                            <TableForPSchedules></TableForPSchedules>
+                        </body>
+                        <footer>
+                            <ScheduleFooter></ScheduleFooter>
+                        </footer>
+                </>
+                
             )}
         </> 
     );

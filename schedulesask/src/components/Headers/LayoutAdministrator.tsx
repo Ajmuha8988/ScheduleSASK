@@ -10,7 +10,6 @@ import ValidationAdministrator from '../../utils/Validation/ValidationPageAdmini
 import { useNavigate } from 'react-router-dom'
 import { BeatLoader } from 'react-spinners';
 
-
 const LayoutAdministrator = () => {
     const { Firstname, Patronymic, loading } = ValidationAdministrator();
     const navigate = useNavigate();

@@ -3,10 +3,10 @@ import PScheduleConstructorBody from "../components/Body/PScheduleConstructorBod
 
 const PScheduleConstructor = () => {
     return (
-        <>
+        <div className='wrapper'>
             <LayoutAdministrator></LayoutAdministrator>
             <PScheduleConstructorBody></PScheduleConstructorBody>
-        </>
+        </div>
 
     );
 };

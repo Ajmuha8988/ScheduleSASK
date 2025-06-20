@@ -2,19 +2,27 @@
 .dropdown-item:hover {
     background-color: orange !important;
 }
-
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.content {
+    flex: 1 1 auto;
+}
 .a:focus,
 .a:hover {
     background-color: #ffc107 !important; /* Более яркий оттенок оранжевого */
 }
-
 .spinner-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
-
+.sms-1{
+    margin-left: 10px !important;
+}
 .jce {
     justify-content: end;
 }
@@ -38,7 +46,9 @@
     color: #616161;
     font-family: Vollda !important; /* Изменяем цвет текста специальной метки */
 }
-
+.w-200{
+    width: 200px !important
+}
 .mobile-fio {
     display: none !important;
 }
@@ -51,7 +61,10 @@
     .mobile-button {
         margin-top: 12px !important;
     }
-
+    .sms-1 {
+        margin-left: 0px !important;
+        margin-top: 10px !important;
+    }
     .mobile-fio {
         display: block !important;
     }
