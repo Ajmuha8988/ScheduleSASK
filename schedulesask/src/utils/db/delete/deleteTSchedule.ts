@@ -1,25 +1,25 @@
 ﻿import { API_URL } from '../../API/config_APIts';
-interface PScheduleRequestBody {
-    ID_PSchedule: bigint
+interface TScheduleRequestBody {
+    ID_TSchedule: bigint
 }
 
-export const DeletePScheduleService = () => {
-    const deletePScheduleMember = async (PScheduleData: PScheduleRequestBody) => {
+export const DeleteTScheduleService = () => {
+    const deleteTScheduleMember = async (TScheduleData: TScheduleRequestBody) => {
             try {
-                const response = await fetch(API_URL + '/administrator/deletePSchedule', {
+                const response = await fetch(API_URL + '/administrator/deleteTSchedule', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(PScheduleData)
+                    body: JSON.stringify(TScheduleData)
                 });
 
                 const data = await response.json();
-                if (data.message === 'Запись успешно был удален из постоянного расписания!') {
+                if (data.message === 'Запись успешно был удален из временного расписания!') {
                     console.log('Всё работает!');
                 } else {
                     throw {
-                        message: 'Ошибка при удаление записи из постоянного расписания. Повторите попытку попозже'
+                        message: 'Ошибка при удаление записи из временного расписания. Повторите попытку попозже'
                     };
                 }
             } catch (error) {
@@ -29,10 +29,10 @@ export const DeletePScheduleService = () => {
                     const typedError = error as Error;
                     errorMessage = typedError.message;
                 } else {
-                    errorMessage = 'Произошла неизвестная ошибка при удаление записи из постоянного расписания.';
+                    errorMessage = 'Произошла неизвестная ошибка при удаление записи из временного расписания.';
                 }
                 throw new Error(errorMessage);
             }
     }
-    return { deletePScheduleMember };
+    return { deleteTScheduleMember };
 };

@@ -2,6 +2,7 @@
 import BodyGroups from "../components/Body/BodyGroups"
 import RouteTeacherGroups from '../utils/Validation/ValidataionStatusGroupTeacher';
 import { BeatLoader } from 'react-spinners';
+import ScheduleFooter from '../components/Footer/ScheduleFooter';
 
 const Groups = () => {
     const { loading } = RouteTeacherGroups();
@@ -14,7 +15,10 @@ const Groups = () => {
             ) : (
                 <>
                     <LayoutTeacher></LayoutTeacher>
-                    <BodyGroups></BodyGroups>
+                    <div className='wrapper'>
+                            <BodyGroups></BodyGroups>
+                            <ScheduleFooter></ScheduleFooter>
+                     </div>
                 </>
             )}
         </>

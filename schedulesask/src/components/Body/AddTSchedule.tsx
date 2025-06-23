@@ -158,7 +158,7 @@ const AddTScheduleForm = () => {
             } // Устанавливаем ошибку в состояние
         }
     };
-    const AddPScheduleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const AddTScheduleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (!ID_Rooms || !ID_Lessons || !NumberLessons || !ID_Teacher
             || !DateTSchedules) {
@@ -186,19 +186,12 @@ const AddTScheduleForm = () => {
             setTimeout(() => window.location.reload(), 1000);
         } catch (error) {
             if (error instanceof Error) {
-                const parsedError = JSON.parse(error.message);
-                // Выводим наиболее значимую ошибку
-                const primaryError = [
-                    parsedError.firstError,
-                    parsedError.HourError,
-                    parsedError.TeacherError,
-                    parsedError.errorInServer
-                ].find((msg) => msg) || 'Ошибка при обработке запроса.';
-
-                SetErrorInServer(primaryError);
+                setError(error.message);
+                SetSuccessPSchedule(null);
             } else {
-                SetErrorInServer(String(error));
-            }
+                setError(String(error));
+                SetSuccessPSchedule(null);
+            } 
             
         }
 
@@ -269,7 +262,7 @@ const AddTScheduleForm = () => {
     };
     return (
     <>
-        <form className="font-for-headers row" onSubmit={AddPScheduleSubmit} method="POST">
+        <form className="font-for-headers row" onSubmit={AddTScheduleSubmit} method="POST">
             <StyledAutocomplete
                 className="w-25 mmt-1 smw-100"
                     id="combo-box-demo"

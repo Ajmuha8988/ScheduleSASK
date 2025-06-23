@@ -1,5 +1,4 @@
 ﻿import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import "./mobileheaders.css"
 import { TextField } from "@mui/material";
@@ -17,7 +16,6 @@ const theme = createTheme({
 });
 
 const AddLessonButton = () => {
-    const location = useLocation();
     const [errorLesson, SetErrorLesson] = useState<string | null>(null);
     const [Success, SetSuccess] = useState<string | null>(null);
     const [Lesson, setLesson] = useState('');
@@ -29,14 +27,11 @@ const AddLessonButton = () => {
             const successfullLesson = await addLesson({
                 NameLesson: Lesson
             });
-            if (location.pathname === '/administrator') {
-                SetErrorLesson(null);
-                SetSuccess(successfullLesson)
-            } else {
-                setTimeout(() => window.location.reload(), 1000);
-                SetErrorLesson(null);
-                SetSuccess(successfullLesson);
-            }
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+            SetErrorLesson(null);
+            SetSuccess(successfullLesson);
         } catch (error) {
             if (error instanceof Error) {
                 SetErrorLesson(error.message);

@@ -1,77 +1,67 @@
 ﻿import { calculateSemester } from '../Date/CalculateSemester'
 import determineWeekType from '../Date/CalculateDivined'
 import getAcademicWeek from '../Date/CalculateFirstSemester'
-import { GetAllPartPscheduleNumerator } from '../db/get/getAllPartPSchedulePartNumerator';
-import { GetAllPartTSchedule } from '../db/get/getAllPartTSchedule';
-import { GetNamegroup } from '../../utils/db/get/GetNameGroup'
-import { GetStartSecondSemester } from '../../utils/db/get/GetStartSecondSemester'
+import { GetAllPartTeacherPSchedule } from '../db/get/getAllPartTeacherPSchedule';
+import { GetAllPartTeacherSchedule } from '../db/get/getAllPartTeacherSchedule';
+import { GetStartSecondSemester } from '../db/get/GetStartSecondSemester'
 import getWeekRange from '../Date/CalculateCurrentWeek';
 import ToDay from '../Date/CalculateToDay';
 
-export const TScheduleSettings = (numberLesson: number, dayOfWeek: string) => {
-    const { dataTSchedulePart, Tloading, errorTMessage } = GetAllPartTSchedule();
-    const { dataNumeratorPschedulePart, loading, errorMessage } = GetAllPartPscheduleNumerator();
-    const { dataGroupName } = GetNamegroup();
+export const TeacherScheduleSettings = (numberLesson: number, dayOfWeek: string) => {
+    const { dataTeacherSchedulePart, Teacherloading, errorTeacherMessage } = GetAllPartTeacherSchedule();
+    const { dataTeacherPSchedulePart, TeacherPloading, errorTeacherPMessage } = GetAllPartTeacherPSchedule();
     const { dataSemester } = calculateSemester();
     const { dataSSS } = GetStartSecondSemester();
     const today = new Date();
-    const nameGroup = dataGroupName.length > 0 ? dataGroupName[0].NameGroup : null;
     if (dataSemester === '2-ой') {
         const currentDate = dataSSS.length > 0 ? dataSSS[0].DateSecondSemester : '';
-        if (!Tloading && Array.isArray(dataTSchedulePart) && currentDate !== '') {
+        if (!Teacherloading && Array.isArray(dataTeacherSchedulePart) && currentDate !== '') {
             const secondSemesterStart = new Date(currentDate);
-            const validDates = dataTSchedulePart
+            const validDates = dataTeacherSchedulePart
                 .filter(x => new Date(x.TimeDate) >= today)
                 .map(x => x.TimeDate);
-            if (validDates.some(date => getWeekRange(new Date(date)) === 'На этой неделе есть замена')) {
-                if (errorTMessage || secondSemesterStart > today) {
+            if (validDates.some(date => getWeekRange(date) === 'На этой неделе есть замена')) {
+                if (errorTeacherMessage || secondSemesterStart > today) {
                     return 'Выходной'
                 }
                 else {
-                    const filteredData = dataTSchedulePart.filter(item => validDates.includes(item.TimeDate) &&
+                    const filteredData = dataTeacherSchedulePart.filter(item => validDates.includes(item.TimeDate) &&
                         item.NumberLessons === numberLesson
-                        && ToDay(new Date(item.TimeDate)) === dayOfWeek && item.NameGroup === nameGroup);
+                        && ToDay(new Date(item.TimeDate)) === dayOfWeek);
                     if (filteredData.length > 0) {
                         return filteredData.map((item) => ({
-                            dataForTTable: `${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
+                            dataForTTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                             dataForTable: ``,
-                            NameLessons: `${item.ID_TSchedule}`,
-                            about: ``,
-                            other: ``,
+                            about: '',
                             color: 'black',
                         }));
                     } else {
-                        if (!loading && Array.isArray(dataNumeratorPschedulePart) && currentDate !== '') {
+                        if (!TeacherPloading && Array.isArray(dataTeacherPSchedulePart) && currentDate !== '') {
                             const secondSemesterStart = new Date(currentDate);
                             const kindOfSchedules = determineWeekType(secondSemesterStart, today);
-                            if (errorMessage || secondSemesterStart > today) {
+                            if (errorTeacherPMessage || secondSemesterStart > today) {
                                 return 'Выходной'
                             }
                             else {
-                                const filteredData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                                    && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup === nameGroup);
+                                const filteredData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                                    && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules );
                                 const tempIDsFromFilteredData = new Set(filteredData.map(item => item.Temp_ID_User));
-                                const validateData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                                    && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup !== nameGroup &&
-                                    tempIDsFromFilteredData.has(item.Temp_ID_User));
+                                const validateData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                                    && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules  && tempIDsFromFilteredData.has(item.Temp_ID_User));
                                 if (filteredData.length > 0) {
                                     if (filteredData.length > 0) {
                                         return filteredData.map((item) => ({
-                                            dataForTable: `${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
+                                            dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                             dataForTTable: ``,
-                                            NameLessons: `${item.ID_PSchedule}`,
                                             about: `${validateData.map(items => items.NameGroup)}\n${validateData.map(items => items.NameLesson)}\n${validateData.map(items => items.NameRoom)}\n${validateData.map(items => items.Lastname)} ${validateData.map(items => items.Firstname)} ${validateData.map(items => items.Patronymic)}`,
-                                            other: `${validateData.map(items => items.ID_PSchedule)}`,
                                             color: '',
                                         }));
                                     }
                                     else {
                                         return filteredData.map((item) => ({
-                                            dataForTable: `${item.Temp_ID_User}\n ${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
+                                            dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                             dataForTTable: ``,
-                                            NameLessons: `${item.ID_PSchedule}`,
                                             about: ``,
-                                            other: ``,
                                             color: '',
                                         }));
                                     }
@@ -81,41 +71,37 @@ export const TScheduleSettings = (numberLesson: number, dayOfWeek: string) => {
                                 }
                             }
                         } else {
-                            return loading
+                            return TeacherPloading
                         }
                     }
                 }
             } else {
-                if (!loading && Array.isArray(dataNumeratorPschedulePart) && currentDate !== '') {
+                if (!TeacherPloading && Array.isArray(dataTeacherPSchedulePart) && currentDate !== '') {
                     const secondSemesterStart = new Date(currentDate);
                     const kindOfSchedules = determineWeekType(secondSemesterStart, today);
-                    if (errorMessage || secondSemesterStart > today) {
+                    if (errorTeacherPMessage || secondSemesterStart > today) {
                         return 'Выходной'
                     }
                     else {
-                        const filteredData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                            && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup === nameGroup);
+                        const filteredData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                            && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules);
                         const tempIDsFromFilteredData = new Set(filteredData.map(item => item.Temp_ID_User));
-                        const validateData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                            && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup !== nameGroup &&
+                        const validateData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                            && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules &&
                             tempIDsFromFilteredData.has(item.Temp_ID_User));
                         if (filteredData.length > 0) {
                             if (filteredData.length > 0) {
                                 return filteredData.map((item) => ({
-                                    dataForTable: `${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
+                                    dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                     dataForTTable: ``,
-                                    NameLessons: `${item.ID_PSchedule}`,
                                     about: `${validateData.map(items => items.NameGroup)}\n${validateData.map(items => items.NameLesson)}\n${validateData.map(items => items.NameRoom)}\n${validateData.map(items => items.Lastname)} ${validateData.map(items => items.Firstname)} ${validateData.map(items => items.Patronymic)}`,
-                                    other: `${validateData.map(items => items.ID_PSchedule)}`,
                                     color: '',
                                 }));
                             }
                             else {
                                 return filteredData.map((item) => ({
-                                    dataForTable: `${item.Temp_ID_User}\n ${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
-                                    NameLessons: `${item.ID_PSchedule}`,
+                                    dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                     about: ``,
-                                    other: ``,
                                     dataForTTable: ``,
                                     color: '',
                                 }));
@@ -126,40 +112,36 @@ export const TScheduleSettings = (numberLesson: number, dayOfWeek: string) => {
                         }
                     }
                 } else {
-                    return loading
+                    return TeacherPloading
                 }
             }
         } else {
-            if (!loading && Array.isArray(dataNumeratorPschedulePart) && currentDate !== '') {
+            if (!TeacherPloading && Array.isArray(dataTeacherPSchedulePart) && currentDate !== '') {
                 const secondSemesterStart = new Date(currentDate);
                 const kindOfSchedules = determineWeekType(secondSemesterStart, today);
-                if (errorMessage || secondSemesterStart > today) {
+                if (errorTeacherPMessage || secondSemesterStart > today) {
                     return 'Выходной'
                 }
                 else {
-                    const filteredData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup === nameGroup);
+                    const filteredData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules);
                     const tempIDsFromFilteredData = new Set(filteredData.map(item => item.Temp_ID_User));
-                    const validateData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup !== nameGroup &&
+                    const validateData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules &&
                         tempIDsFromFilteredData.has(item.Temp_ID_User));
                     if (filteredData.length > 0) {
                         if (filteredData.length > 0) {
                             return filteredData.map((item) => ({
-                                dataForTable: `${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
-                                NameLessons: `${item.ID_PSchedule}`,
+                                dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                 about: `${validateData.map(items => items.NameGroup)}\n${validateData.map(items => items.NameLesson)}\n${validateData.map(items => items.NameRoom)}\n${validateData.map(items => items.Lastname)} ${validateData.map(items => items.Firstname)} ${validateData.map(items => items.Patronymic)}`,
-                                other: `${validateData.map(items => items.ID_PSchedule)}`,
                                 dataForTTable: ``,
                                 color: '',
                             }));
                         }
                         else {
                             return filteredData.map((item) => ({
-                                dataForTable: `${item.Temp_ID_User}\n ${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
-                                NameLessons: `${item.ID_PSchedule}`,
+                                dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                 about: ``,
-                                other: ``,
                                 dataForTTable: ``,
                                 color: '',
                             }));
@@ -170,31 +152,29 @@ export const TScheduleSettings = (numberLesson: number, dayOfWeek: string) => {
                     }
                 }
             } else {
-                return loading
+                return TeacherPloading
             }
         }
     }
     else if (dataSemester === '1-ый') {
         const kindOfSchedules = getAcademicWeek(today)
-        if (!Tloading && Array.isArray(dataTSchedulePart)) {
-            const validDates = dataTSchedulePart
+        if (!Teacherloading && Array.isArray(dataTeacherSchedulePart)) {
+            const validDates = dataTeacherSchedulePart
                 .filter(x => new Date(x.TimeDate) >= today)
                 .map(x => x.TimeDate);
             if (validDates.some(date => getWeekRange(date) === 'На этой неделе есть замена')) {
-                if (errorTMessage) {
+                if (errorTeacherMessage) {
                     return 'Выходной'
                 }
                 else {
-                    const filteredData = dataTSchedulePart.filter(item => validDates.includes(item.TimeDate) &&
-                        item.NumberLessons === numberLesson
-                        && ToDay(item.TimeDate) === dayOfWeek && item.NameGroup === nameGroup);
+                    const filteredData = dataTeacherSchedulePart.filter(item => validDates.includes(item.TimeDate)
+                        && item.NumberLessons === numberLesson
+                        && ToDay(item.TimeDate) === dayOfWeek);
                     if (filteredData.length > 0) {
                         return filteredData.map((item) => ({
-                            dataForTTable: `${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
+                            dataForTTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                             dataForTable: ``,
-                            NameLessons: `${item.ID_TSchedule}`,
                             about: ``,
-                            other: ``,
                             color: '',
                         }));
                     } else {
@@ -202,68 +182,60 @@ export const TScheduleSettings = (numberLesson: number, dayOfWeek: string) => {
                     }
                 }
             } else {
-                if (!loading && Array.isArray(dataNumeratorPschedulePart)) {
-                    if (errorMessage) {
+                if (!TeacherPloading && Array.isArray(dataTeacherPSchedulePart)) {
+                    if (errorTeacherPMessage) {
                         return 'Выходной'
                     }
                     else {
-                        const filteredData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                            && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup === nameGroup);
+                        const filteredData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                            && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules);
                         const tempIDsFromFilteredData = new Set(filteredData.map(item => item.Temp_ID_User));
-                        const validateData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                            && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup !== nameGroup &&
+                        const validateData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                            && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules &&
                             tempIDsFromFilteredData.has(item.Temp_ID_User));
                         if (filteredData.length > 0) {
                             if (filteredData.length > 0) {
                                 return filteredData.map((item) => ({
-                                    dataForTable: `${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
+                                    dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                     dataForTTable: ``,
-                                    NameLessons: `${item.ID_PSchedule}`,
                                     about: `${validateData.map(items => items.NameGroup)}\n${validateData.map(items => items.NameLesson)}\n${validateData.map(items => items.NameRoom)}\n${validateData.map(items => items.Lastname)} ${validateData.map(items => items.Firstname)} ${validateData.map(items => items.Patronymic)}`,
-                                    other: `${validateData.map(items => items.ID_PSchedule)}`,
                                     color: '',
                                 }));
                             }
                             else {
                                 return filteredData.map((item) => ({
-                                    dataForTable: `${item.Temp_ID_User}\n ${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
-                                    NameLessons: `${item.ID_PSchedule}`,
+                                    dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                     about: ``,
-                                    other: ``,
                                     dataForTTable: ``,
                                     color: '',
                                 }));
                             }
 
                         } else {
-                            if (!loading && Array.isArray(dataNumeratorPschedulePart)) {
-                                if (errorMessage) {
+                            if (!TeacherPloading && Array.isArray(dataTeacherPSchedulePart)) {
+                                if (errorTeacherPMessage) {
                                     return 'Выходной'
                                 }
                                 else {
-                                    const filteredData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup === nameGroup);
+                                    const filteredData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules);
                                     const tempIDsFromFilteredData = new Set(filteredData.map(item => item.Temp_ID_User));
-                                    const validateData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup !== nameGroup &&
+                                    const validateData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules &&
                                         tempIDsFromFilteredData.has(item.Temp_ID_User));
                                     if (filteredData.length > 0) {
                                         if (filteredData.length > 0) {
                                             return filteredData.map((item) => ({
-                                                dataForTable: `${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
-                                                NameLessons: `${item.ID_PSchedule}`,
+                                                dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                                 about: `${validateData.map(items => items.NameGroup)}\n${validateData.map(items => items.NameLesson)}\n${validateData.map(items => items.NameRoom)}\n${validateData.map(items => items.Lastname)} ${validateData.map(items => items.Firstname)} ${validateData.map(items => items.Patronymic)}`,
-                                                other: `${validateData.map(items => items.ID_PSchedule)}`,
                                                 dataForTTable: ``,
                                                 color: '',
                                             }));
                                         }
                                         else {
                                             return filteredData.map((item) => ({
-                                                dataForTable: `${item.Temp_ID_User}\n ${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
-                                                NameLessons: `${item.ID_PSchedule}`,
+                                                dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                                 about: ``,
-                                                other: ``,
                                                 dataForTTable: ``,
                                                 color: '',
                                             }));
@@ -274,43 +246,39 @@ export const TScheduleSettings = (numberLesson: number, dayOfWeek: string) => {
                                     }
                                 }
                             } else {
-                                return loading
+                                return TeacherPloading
                             }
                         }
                     }
                 } else {
-                    return loading
+                    return TeacherPloading
                 }
             }
         } else {
-            if (!loading && Array.isArray(dataNumeratorPschedulePart)) {
-                if (errorMessage) {
+            if (!TeacherPloading && Array.isArray(dataTeacherPSchedulePart)) {
+                if (errorTeacherPMessage) {
                     return 'Выходной'
                 }
                 else {
-                    const filteredData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup === nameGroup);
+                    const filteredData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules);
                     const tempIDsFromFilteredData = new Set(filteredData.map(item => item.Temp_ID_User));
-                    const validateData = dataNumeratorPschedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
-                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules && item.NameGroup !== nameGroup &&
+                    const validateData = dataTeacherPSchedulePart.filter(item => item.NumberLessons === numberLesson && item.KindOfSemester === dataSemester
+                        && item.DaysOfWeek === dayOfWeek && item.KindOfSchedules === kindOfSchedules &&
                         tempIDsFromFilteredData.has(item.Temp_ID_User));
                     if (filteredData.length > 0) {
                         if (filteredData.length > 0) {
                             return filteredData.map((item) => ({
-                                dataForTable: `${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
-                                NameLessons: `${item.ID_PSchedule}`,
+                                dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                 about: `${validateData.map(items => items.NameGroup)}\n${validateData.map(items => items.NameLesson)}\n${validateData.map(items => items.NameRoom)}\n${validateData.map(items => items.Lastname)} ${validateData.map(items => items.Firstname)} ${validateData.map(items => items.Patronymic)}`,
-                                other: `${validateData.map(items => items.ID_PSchedule)}`,
                                 dataForTTable: ``,
                                 color: '',
                             }));
                         }
                         else {
                             return filteredData.map((item) => ({
-                                dataForTable: `${item.Temp_ID_User}\n ${item.NameLesson}\n${item.NameRoom}\n${item.Lastname} ${item.Firstname} ${item.Patronymic}`,
-                                NameLessons: `${item.ID_PSchedule}`,
+                                dataForTable: `${item.NameGroup}\n${item.NameLesson}\n${item.NameRoom}`,
                                 about: ``,
-                                other: ``,
                                 dataForTTable: ``,
                                 color: '',
                             }));
@@ -321,7 +289,7 @@ export const TScheduleSettings = (numberLesson: number, dayOfWeek: string) => {
                     }
                 }
             } else {
-                return loading
+                return TeacherPloading;
             }
         }
     }

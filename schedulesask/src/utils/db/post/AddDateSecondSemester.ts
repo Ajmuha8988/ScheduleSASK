@@ -17,11 +17,11 @@ export const DateSecondSemesterService = () => {
 
                 const data = await response.json();
                 if (data.message === 'Обновлена дата выхода на учёбу') {
-                    throw new Error(data.message);
+                    return data.message;
                 } else if (data.message === 'Назначен дата выхода на учёбу!') {
                     return data.message;
                 } else {
-                    alert("Ошибка при назначении даты выхода на учёбу");
+                    throw new Error(data.message);
                 }
             } catch (error) {
                 let errorMessage = '';

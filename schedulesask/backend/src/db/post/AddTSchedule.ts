@@ -18,25 +18,37 @@ export default async function addTSchedules(req: any, res: any): Promise<void> {
         const parts = body.TimeDate.split('/');
         const convertedStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
         const myDate = new Date(convertedStr);
-        const checkData = `SELECT COUNT(*) AS count FROM TSchedule
-        WHERE ID_Group = 
-		(Select ID_Group 
-		 From Groups
-		 Where NameGroup = @namegroup) AND ID_Lesson = @lesson
-         AND ID_user = (Select ID_TrueUser  From TempIDUser Where Temp_ID_User = @id_Teachers)
+        console.log(body.NumberLesson);
+        const checkData = `SELECT ID_TSchedule FROM TSchedule
+        WHERE ID_user = (Select ID_TrueUser
+         From TempIDUser
+         Where Temp_ID_User = @id_Teachers)
          AND NumberLessons = @numberlessons
 		 AND TimeDate = @timedate`;
         const resultCheck = await pool.request()
-            .input('namegroup', sql.NVarChar, body.NameGroup)
-            .input('lesson', sql.BigInt, body.ID_Lesson)
-            .input('room', sql.BigInt, body.ID_Room)
-            .input('id_Teachers', sql.BigInt, body.ID_user)
+            .input('id_Teachers', sql.NVarChar, body.ID_user)
             .input('numberlessons', sql.Int, body.NumberLesson)
             .input('timedate', sql.Date, myDate)
             .query(checkData);
-        if (resultCheck.recordset[0].count > 0) {
-            const DataTSchedule = resultCheck.recordset[0]['ID_TSchedule']
-            const updateQuery = `UPDATE TSchedule
+        if (resultCheck.recordset.length > 0) {
+            res.status(409).json({
+                message: 'У преподавателя уже назначена замена на это время'
+            });
+        } else {
+            const check = `SELECT ID_TSchedule FROM TSchedule
+            WHERE ID_Group = (Select ID_Group 
+	                 From Groups
+	                 Where NameGroup = @namegroup)
+            AND NumberLessons = @numberlessons
+		    AND TimeDate = @timedate`;
+            const resultSecondCheck = await pool.request()
+                .input('namegroup', sql.NVarChar, body.NameGroup)
+                .input('numberlessons', sql.Int, body.NumberLesson)
+                .input('timedate', sql.Date, myDate)
+                .query(check);
+            if (resultSecondCheck.recordset.length > 0) {
+                const DataTSchedule = resultCheck.recordset[0]['ID_TSchedule']
+                const updateQuery = `UPDATE TSchedule
                 SET ID_Group = (Select ID_Group 
 	                 From Groups
 	                 Where NameGroup = @namegroup),
@@ -44,35 +56,38 @@ export default async function addTSchedules(req: any, res: any): Promise<void> {
                 ID_user = (Select ID_TrueUser  From TempIDUser Where Temp_ID_User = @id_Teachers), NumberLessons = @numberlessons,
                 TimeDate = @timedate
                 WHERE ID_TSchedule = @tschedule`;
-            const result = await pool.request()
-                .input('namegroup', sql.NVarChar, body.NameGroup)
-                .input('lesson', sql.BigInt, body.ID_Lesson)
-                .input('room', sql.BigInt, body.ID_Room)
-                .input('id_Teachers', sql.BigInt, body.ID_user)
-                .input('numberlessons', sql.Int, body.NumberLesson)
-                .input('timedate', sql.Date, myDate)
-                .input('tschedule', sql.BigInt, DataTSchedule)
-                .query(updateQuery);
-            res.status(409).json({
-                message: 'Замена переиздана'
-            });
-        } else {
-            console.log(body.ID_user);
-            const insertQuery = `
+                const result = await pool.request()
+                    .input('namegroup', sql.NVarChar, body.NameGroup)
+                    .input('lesson', sql.BigInt, body.ID_Lesson)
+                    .input('room', sql.BigInt, body.ID_Room)
+                    .input('id_Teachers', sql.BigInt, body.ID_user)
+                    .input('numberlessons', sql.Int, body.NumberLesson)
+                    .input('timedate', sql.Date, myDate)
+                    .input('tschedule', sql.BigInt, DataTSchedule)
+                    .query(updateQuery);
+                res.status(201).json({
+                    message: 'Замена переиздана'
+                });
+            } else {
+                console.log(body.ID_user);
+                const insertQuery = `
                INSERT INTO TSchedule (ID_Group, ID_Lesson, ID_Room, ID_user, NumberLessons, TimeDate)
                VALUES ((Select ID_Group From Groups Where NameGroup = @namegroup), @lesson,  @room,
 		       (Select ID_TrueUser  From TempIDUser Where Temp_ID_User = @id_Teachers), @numberlessons, @timedate);`;
-            const result = await pool.request().input('dateSecondSemester', sql.Date, myDate)
-                .input('namegroup', sql.NVarChar, body.NameGroup)
-                .input('lesson', sql.BigInt, body.ID_Lesson)
-                .input('room', sql.BigInt, body.ID_Room)
-                .input('id_Teachers', sql.BigInt, body.ID_user)
-                .input('numberlessons', sql.Int, body.NumberLesson)
-                .input('timedate', sql.Date, myDate)
-                .query(insertQuery);
-            res.status(201).json({
-                message: 'Замена назначена!'
-            });
+                const result = await pool.request().input('dateSecondSemester', sql.Date, myDate)
+                    .input('namegroup', sql.NVarChar, body.NameGroup)
+                    .input('lesson', sql.BigInt, body.ID_Lesson)
+                    .input('room', sql.BigInt, body.ID_Room)
+                    .input('id_Teachers', sql.BigInt, body.ID_user)
+                    .input('numberlessons', sql.Int, body.NumberLesson)
+                    .input('timedate', sql.Date, myDate)
+                    .query(insertQuery);
+                res.status(201).json({
+                    message: 'Замена назначена!'
+                });
+            }
+           
+            
         }
     } catch (error) {
         console.error('Error during adding:', error);

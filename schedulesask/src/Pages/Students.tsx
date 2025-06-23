@@ -1,9 +1,12 @@
 ﻿import LayoutStudent from "../components/Headers/LayoutStudent"
-
+import TableForStudentsSchedules from "../components/Body/TableForStudentsSchedules"
 
 const Students = () => {
     return (
-        <LayoutStudent></LayoutStudent>
+        <div className='wrapper'>
+            <LayoutStudent></LayoutStudent>
+            <TableForStudentsSchedules></TableForStudentsSchedules>
+        </div>
 
     );
 };

@@ -37,14 +37,10 @@ const AddDateSecondSemesterButton = () => {
                 const successfullRoom = await addDateSecondSemester({
                     DateSecondSemester: DatesecondSemester.format('DD/MM/YYYY')
                 });
-                if (location.pathname === '/administrator') {
-                    SetDateSecondSemester(null);
-                    SetSuccess(successfullRoom);
-                } else {
                     setTimeout(() => window.location.reload(), 1000);
                     SetDateSecondSemester(null);
                     SetSuccess(successfullRoom);
-                }
+                
             } catch (error) {
                 if (error instanceof Error) {
                     SetDateSecondSemester(error.message);

@@ -7,12 +7,7 @@ interface TScheduleData {
     NumberLesson: number;
     TimeDate: string;
 }
-interface ServerErrors {
-    errorInServer?: string;
-    firstError?: string;
-    HourError?: string;
-    TeacherError?: string;
-}
+
 export const TScheduleService = () => {
     const addTSchedule = async (pscheduleData: TScheduleData) => {
         try {
@@ -29,15 +24,21 @@ export const TScheduleService = () => {
                 return data.message;
             } else if (data.message === 'Замена назначена!') {
                 return data.message;
+            } else if (data.message === 'У преподавателя уже назначена замена на это время') {
+                throw new Error(data.message);
             } else {
                 alert("Ошибка при назначении замен");
             }
         } catch (error) {
-            const serverErrors: ServerErrors = {};
-            if (typeof error === 'object' && error !== null) {
-                Object.assign(serverErrors, error);
+            let errorMessage = '';
+            if (typeof error === 'object' && error !== null && 'message' in error) {
+                // Приводим тип error к типу Error
+                const typedError = error as Error;
+                errorMessage = typedError.message;
+            } else {
+                errorMessage = 'Произошла неизвестная ошибка при создании кабинета.';
             }
-            throw new Error(JSON.stringify(serverErrors));
+            throw new Error(errorMessage);
             
         }
     };

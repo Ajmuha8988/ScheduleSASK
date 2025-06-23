@@ -99,7 +99,6 @@ const GroupChangeList = () => {
               : ''
           }
           renderInput={(params) => <StyledTextField
-              required
               {...params}
               label="группа"
           />}

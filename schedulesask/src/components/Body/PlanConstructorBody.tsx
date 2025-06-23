@@ -23,9 +23,7 @@ const PlanConstructorBody = () => {
                             <AddPlanForm></AddPlanForm>
                             <ListSemesterPlan></ListSemesterPlan>
                         </body>
-                        <footer>
-                            <ScheduleFooter></ScheduleFooter>
-                        </footer>
+                        <ScheduleFooter></ScheduleFooter>
                 </>
             )}
         </>

@@ -9,7 +9,7 @@ import RemoveGroupButton from './RemoveGroup';
 
 const UnBodyGroups = () => {
     return (
-        <body className="font-for-headers container mt-3">
+        <body className="font-for-headers container mt-3 content">
             <div className="d-flex">
                     <AddMembersForm></AddMembersForm>
                     <RemoveGroupButton></RemoveGroupButton>

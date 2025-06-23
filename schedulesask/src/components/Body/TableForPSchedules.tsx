@@ -292,7 +292,7 @@ export default function TableForPSchedules() {
                                                                                                     handleClick(event);
                                                                                                     popupState.open(event.currentTarget);
                                                                                                 }}>
-                                                                                                    {displayedTwoValue}
+                                                                                                    {displayedValue}
                                                                                                 </p>
                                                                                                 <Menu  {...bindMenu(popupState)}
                                                                                                     anchorReference="anchorPosition"
@@ -530,7 +530,7 @@ export default function TableForPSchedules() {
                                                                                                     handleClick(event);
                                                                                                     popupState.open(event.currentTarget);
                                                                                                 }}>
-                                                                                                    {displayedTwoValue}
+                                                                                                    {displayedValue}
                                                                                                 </p>
                                                                                                 <Menu  {...bindMenu(popupState)}
                                                                                                     anchorReference="anchorPosition"
@@ -769,7 +769,7 @@ export default function TableForPSchedules() {
                                                                                                         handleClick(event);
                                                                                                         popupState.open(event.currentTarget);
                                                                                                     }}>
-                                                                                                        {displayedTwoValue}
+                                                                                                        {displayedValue}
                                                                                                     </p>
                                                                                                     <Menu  {...bindMenu(popupState)}
                                                                                                         anchorReference="anchorPosition"
@@ -1007,7 +1007,7 @@ export default function TableForPSchedules() {
                                                                                                         handleClick(event);
                                                                                                         popupState.open(event.currentTarget);
                                                                                                     }}>
-                                                                                                        {displayedTwoValue}
+                                                                                                        {displayedValue}
                                                                                                     </p>
                                                                                                     <Menu  {...bindMenu(popupState)}
                                                                                                         anchorReference="anchorPosition"

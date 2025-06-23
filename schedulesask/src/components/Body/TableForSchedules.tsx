@@ -13,7 +13,6 @@ import { WeekColumns } from '../../utils/Date/DateSettings';
 import { PScheduleNumerator } from '../../utils/DataForTable/PScheduleSettingsNumerator';
 import { PScheduleDenumerator } from '../../utils/DataForTable/PScheduleSettingsDenumerator';
 import { GetNamegroup } from '../../utils/db/get/GetNameGroup';
-import { GetStartSecondSemester } from '../../utils/db/get/GetStartSecondSemester';
 import { calculateSemester } from '../../utils/Date/CalculateSemester';
 import { BeatLoader } from 'react-spinners';
 import PopupState, { bindMenu } from 'material-ui-popup-state';
@@ -86,7 +85,6 @@ export default function TableForSchedules() {
         createData(7, '18.10-19.40', PScheduleDenumerator(7, "Понедельник"), PScheduleDenumerator(7, "Вторник"), PScheduleDenumerator(7, "Среда"), PScheduleDenumerator(7, "Четверг"), PScheduleDenumerator(7, "Пятница"), PScheduleDenumerator(7, "Суббота"), 'Выходной'),
     ];
     const { dataGroupName } = GetNamegroup();
-    const { dataSSS } = GetStartSecondSemester();
     const { semester } = calculateSemester();
     if (semester === '2-ой семестр') {
         rowsNumerator = [
@@ -129,7 +127,6 @@ export default function TableForSchedules() {
           ];
     }
     const nameGroup = dataGroupName.length > 0 ? dataGroupName[0].NameGroup : null;
-    const startSecondSemester = dataSSS.length > 0 ? dataSSS[0].DateSecondSemester : ''; 
     const [mousePosition, setMousePosition] = React.useState<MousePosition>({
         x: null,
         y: null
@@ -264,7 +261,7 @@ export default function TableForSchedules() {
                                                                                             handleClick(event);
                                                                                             popupState.open(event.currentTarget);
                                                                                         }}>
-                                                                                            {displayedTwoValue}
+                                                                                            {displayedValue}
                                                                                         </p>
                                                                                     </React.Fragment>
                                                                                 )}
@@ -458,7 +455,7 @@ export default function TableForSchedules() {
                                                                                             handleClick(event);
                                                                                             popupState.open(event.currentTarget);
                                                                                         }}>
-                                                                                            {displayedTwoValue}
+                                                                                            {displayedValue}
                                                                                         </p>
                                                                                     </React.Fragment>
                                                                                 )}

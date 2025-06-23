@@ -8,12 +8,15 @@ import AddGroup from './ModalGroups';
 
 const UnBodyGroups = () => {
     return (
-        <body className="font-for-headers container text-center">
-            <h1>У вас пока нету руководящей группы</h1>
-            <h1>
-                Нажмите на кнопку <AddGroup></AddGroup> чтобы создать новую группу
-            </h1>
-        </body>
+        <>
+            <body className="font-for-headers container text-center content">
+                <h1>У вас пока нету руководящей группы</h1>
+                <h1>
+                    Нажмите на кнопку <AddGroup></AddGroup> чтобы создать новую группу
+                </h1>
+            </body>
+        </>
+        
     );
 };
 
