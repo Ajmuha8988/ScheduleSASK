@@ -48,6 +48,7 @@ import { getPlanLesson } from './db/get/GetPlanLesson';
 import ValidateDataGroup from './db/get/validatedatagroup';
 import { StartSecondSemester } from './db/get/StartSecondSemester';
 import cookieParser from 'cookie-parser';
+import { startTelegramBot } from './Telegram_bot/Telegram_bot';
 
 const app = express();
 const corsOptions = {
@@ -59,6 +60,7 @@ app.options('*', cors());
 app.use(express.json());
 app.use(cookieParser());
 connectToDatabase().then(() => {
+    startTelegramBot();
     app.get('/', (req, res) => {
         res.json({ status: "Окей" });
     });

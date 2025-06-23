@@ -21,7 +21,12 @@ export const TScheduleSettings = (numberLesson: number, dayOfWeek: string) => {
         if (!Tloading && Array.isArray(dataTSchedulePart) && currentDate !== '') {
             const secondSemesterStart = new Date(currentDate);
             const validDates = dataTSchedulePart
-                .filter(x => new Date(x.TimeDate) >= today)
+                .filter(x => {
+                    const eventDate = new Date(x.TimeDate);
+                    return eventDate.getFullYear() === today.getFullYear()
+                        && eventDate.getMonth() === today.getMonth()
+                        && eventDate.getDate() >= today.getDate();
+                })
                 .map(x => x.TimeDate);
             if (validDates.some(date => getWeekRange(new Date(date)) === 'На этой неделе есть замена')) {
                 if (errorTMessage || secondSemesterStart > today) {
@@ -178,7 +183,12 @@ export const TScheduleSettings = (numberLesson: number, dayOfWeek: string) => {
         const kindOfSchedules = getAcademicWeek(today)
         if (!Tloading && Array.isArray(dataTSchedulePart)) {
             const validDates = dataTSchedulePart
-                .filter(x => new Date(x.TimeDate) >= today)
+                .filter(x => {
+                    const eventDate = new Date(x.TimeDate);
+                    return eventDate.getFullYear() === today.getFullYear()
+                        && eventDate.getMonth() === today.getMonth()
+                        && eventDate.getDate() >= today.getDate();
+                })
                 .map(x => x.TimeDate);
             if (validDates.some(date => getWeekRange(date) === 'На этой неделе есть замена')) {
                 if (errorTMessage) {

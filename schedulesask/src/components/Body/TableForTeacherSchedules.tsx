@@ -244,6 +244,7 @@ export default function TableForTeacherSchedules() {
                                                                                                                     fontFamily: "'Vollda'",
                                                                                                                     fontSize: '1rem',
                                                                                                                     fontWeight: 'normal',
+                                                                                                                    border: 0,
                                                                                                                 }} key={column.id} align={column.align}>
                                                                                                                     <p>{displayedTwoValue}</p>
                                                                                                                 </TableCell>

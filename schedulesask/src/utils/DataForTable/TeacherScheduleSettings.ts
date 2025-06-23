@@ -18,7 +18,12 @@ export const TeacherScheduleSettings = (numberLesson: number, dayOfWeek: string)
         if (!Teacherloading && Array.isArray(dataTeacherSchedulePart) && currentDate !== '') {
             const secondSemesterStart = new Date(currentDate);
             const validDates = dataTeacherSchedulePart
-                .filter(x => new Date(x.TimeDate) >= today)
+                .filter(x => {
+                    const eventDate = new Date(x.TimeDate);
+                    return eventDate.getFullYear() === today.getFullYear()
+                        && eventDate.getMonth() === today.getMonth()
+                        && eventDate.getDate() >= today.getDate();
+                })
                 .map(x => x.TimeDate);
             if (validDates.some(date => getWeekRange(date) === 'На этой неделе есть замена')) {
                 if (errorTeacherMessage || secondSemesterStart > today) {
@@ -160,7 +165,12 @@ export const TeacherScheduleSettings = (numberLesson: number, dayOfWeek: string)
         const kindOfSchedules = getAcademicWeek(today)
         if (!Teacherloading && Array.isArray(dataTeacherSchedulePart)) {
             const validDates = dataTeacherSchedulePart
-                .filter(x => new Date(x.TimeDate) >= today)
+                .filter(x => {
+                    const eventDate = new Date(x.TimeDate);
+                    return eventDate.getFullYear() === today.getFullYear()
+                        && eventDate.getMonth() === today.getMonth()
+                        && eventDate.getDate() >= today.getDate();
+                })
                 .map(x => x.TimeDate);
             if (validDates.some(date => getWeekRange(date) === 'На этой неделе есть замена')) {
                 if (errorTeacherMessage) {
