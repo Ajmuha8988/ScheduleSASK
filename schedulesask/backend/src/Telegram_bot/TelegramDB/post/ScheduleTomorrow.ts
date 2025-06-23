@@ -60,19 +60,19 @@ export default async function TomorrowScheduleSASK(group: string) {
                             const textParts = [
                                 `*${TomorrowDay()}:*`,
                                 `*1. 8:00 - 9:30*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 1).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*2. 9:40 - 11:10*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 2).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*3. 11:30 - 13:00*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 3).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*4. 13:10 - 14:40*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 4).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*5. 14:50 - 16:20*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 5).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*6. 16:30 - 18:00*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 6).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*7. 18:10 - 19:40*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 7).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                             ];
                                 return textParts.join('\n');
                         } else if (kindOfSchedules === 'Числитель') {
@@ -102,19 +102,19 @@ export default async function TomorrowScheduleSASK(group: string) {
                             const textParts = [
                                 `*${TomorrowDay()}:*`,
                                 `*1. 8:00 - 9:30*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 1).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*2. 9:40 - 11:10*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 2).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*3. 11:30 - 13:00*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 3).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*4. 13:10 - 14:40*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 4).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*5. 14:50 - 16:20*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 5).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*6. 16:30 - 18:00*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 6).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                                 `*7. 18:10 - 19:40*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 7).map
-                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                                    ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                             ];
                                 return textParts.join('\n');
                         } else {
@@ -155,19 +155,19 @@ export default async function TomorrowScheduleSASK(group: string) {
                     const textParts = [
                         `*${TomorrowDay()}:*`,
                         `*1. 8:00 - 9:30*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 1).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*2. 9:40 - 11:10*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 2).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*3. 11:30 - 13:00*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 3).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*4. 13:10 - 14:40*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 4).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*5. 14:50 - 16:20*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 5).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*6. 16:30 - 18:00*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 6).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*7. 18:10 - 19:40*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 7).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                     ];
                         return textParts.join('\n');
                 } else if (kindOfSchedules === 'Числитель') {
@@ -197,19 +197,19 @@ export default async function TomorrowScheduleSASK(group: string) {
                     const textParts = [
                         `*${TomorrowDay()}:*`,
                         `*1. 8:00 - 9:30*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 1).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*2. 9:40 - 11:10*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 2).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*3. 11:30 - 13:00*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 3).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*4. 13:10 - 14:40*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 4).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*5. 14:50 - 16:20*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 5).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*6. 16:30 - 18:00*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 6).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                         `*7. 18:10 - 19:40*\n${resultPScheduleSASK.recordset.filter((x) => x.NumberLessons === 7).map
-                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нету'}`,
+                            ((y) => `Преподаватель:\t${y.Lastname ? y.Lastname : ''} ${y.Firstname ? y.Firstname : ''} ${y.Patronymic ? y.Patronymic : ''},\nУчебный предмет:\t${y.NameLesson ? y.NameLesson : ''},\nКабинет:\t${y.NameRoom ? y.NameRoom : ''}`).join('\n') || 'Занятии нет'}`,
                     ];
                         return textParts.join('\n');
                 } else {

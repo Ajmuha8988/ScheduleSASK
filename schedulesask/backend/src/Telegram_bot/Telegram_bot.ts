@@ -1,10 +1,10 @@
-﻿import TelegramBot from 'node-telegram-bot-api';
+﻿import  bot from './Bot'
 import * as dotenv from 'dotenv';
 import AuthorizationUser from './TelegramDB/post/authorization';
 import groupScheduleSASK from './TelegramDB/post/Schedule';
 import TomorrowScheduleSASK from './TelegramDB/post/ScheduleTomorrow';
 import ScheduleTeacher from './TelegramDB/post/ScheduleTeacher';
-
+import TelegramBot from 'node-telegram-bot-api';
 // Тип состояния пользователя
 type UserState = {
     state?: string; // возможные значения: 'login', 'password'
@@ -24,9 +24,7 @@ export function startTelegramBot() {
     dotenv.config(); // загружаем переменные окружения
 
     const token = process.env.TELEGRAM_BOT_TOKEN || '';
-    if (!token) throw new Error('Telegram bot token is not provided');
-
-    const bot = new TelegramBot(token, { polling: true });
+    if (!token) throw new Error('Телеграмм бот не обнаружен');
 
     // Клавиатура с кнопкой перезапуска диалога
     const keyboardButtons: TelegramBot.KeyboardButton[][] = [[{ text: 'Перезапустить диалог' }]];

@@ -1,5 +1,7 @@
 ﻿import * as sql from 'mssql';
 import sqlConfig from '../config/config';
+import bot from '../../Telegram_bot/Bot'
+
 interface TScheduleRequestBody {
     NameGroup: string;
     ID_Lesson: bigint;
@@ -8,8 +10,6 @@ interface TScheduleRequestBody {
     NumberLesson: number;
     TimeDate: string;
 }
-
-
 export default async function addTSchedules(req: any, res: any): Promise<void> {
     try {
         const body: TScheduleRequestBody = req.body;
@@ -18,7 +18,6 @@ export default async function addTSchedules(req: any, res: any): Promise<void> {
         const parts = body.TimeDate.split('/');
         const convertedStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
         const myDate = new Date(convertedStr);
-        console.log(body.NumberLesson);
         const checkData = `SELECT ID_TSchedule FROM TSchedule
         WHERE ID_user = (Select ID_TrueUser
          From TempIDUser
@@ -65,8 +64,12 @@ export default async function addTSchedules(req: any, res: any): Promise<void> {
                     .input('timedate', sql.Date, myDate)
                     .input('tschedule', sql.BigInt, DataTSchedule)
                     .query(updateQuery);
-                res.status(201).json({
-                    message: 'Замена переиздана'
+                const channelId = '-1002729346237';
+                bot.sendMessage(channelId, `<b>Внимание!</b>\nОпубликована замена для группы ${body.NameGroup}.\n<b>Просьба ознакомиться:</b>\nСайт: https://ajmuha8988-schedulesask-3643.twc1.net\nАвторизация также возможна у бота @schedulesask_bot.`,
+                    { parse_mode: 'HTML' })
+                    .catch(err => console.error('Ошибка при публикации:', err));
+               res.status(201).json({
+                    message: 'Замена переиздана!'
                 });
             } else {
                 console.log(body.ID_user);
@@ -82,12 +85,14 @@ export default async function addTSchedules(req: any, res: any): Promise<void> {
                     .input('numberlessons', sql.Int, body.NumberLesson)
                     .input('timedate', sql.Date, myDate)
                     .query(insertQuery);
+                const channelId = '-1002729346237';
+                bot.sendMessage(channelId, `<b>Внимание!</b>\nОпубликована замена для группы ${body.NameGroup}.\n<b>Просьба ознакомиться:</b>\nСайт: https://ajmuha8988-schedulesask-3643.twc1.net\nАвторизация также возможна у бота @schedulesask_bot.`,
+                    { parse_mode: 'HTML' })
+                    .catch(err => console.error('Ошибка при публикации:', err));
                 res.status(201).json({
                     message: 'Замена назначена!'
                 });
             }
-           
-            
         }
     } catch (error) {
         console.error('Error during adding:', error);
